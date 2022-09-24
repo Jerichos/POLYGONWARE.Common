@@ -6,10 +6,10 @@ namespace Common
     {
         [SerializeField] private bool _dontDestroyOnLoad;
         
-        private T _instance;
-        public T Instance => _instance;
+        private static T _instance;
+        public static T Instance => _instance;
 
-        protected void Awake()
+        protected virtual void Awake()
         {
             if (_instance)
             {
