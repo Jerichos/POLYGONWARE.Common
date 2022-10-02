@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Common.Combat
+namespace Common
 {
     [Serializable]
     public struct DamageData
