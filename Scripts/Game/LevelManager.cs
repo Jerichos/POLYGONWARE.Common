@@ -18,7 +18,7 @@ namespace Common
         protected override void Awake()
         {
             base.Awake();
-            StartCoroutine(Freeze(3));
+            StartCoroutine(Freeze(4));
         }
 
         public void AddPlayer(Player player)
@@ -43,6 +43,16 @@ namespace Common
             }
             
             Time.timeScale = 1;
+        }
+
+        public void Respawn(Player player)
+        {
+            // Spawn Character For a Player
+            var character = Instantiate(_characterPrefab);
+            _characterPrefab.transform.position = _respawn.position;
+            
+            // Assign character to a Player
+            player.AssignToControl(character);
         }
     }
 }
