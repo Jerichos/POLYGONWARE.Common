@@ -7,7 +7,7 @@ namespace Common
     {
         [SerializeField] private Sprite[] _sprites;
         [SerializeField] private float _rate = 2;
-
+        [SerializeField] private bool _disableAfterAnimation;
         [SerializeField] private SpriteRenderer _renderer;
 
         private int _currentSprite;
@@ -18,13 +18,20 @@ namespace Common
 
             _currentSprite++;
             if (_currentSprite >= _sprites.Length)
+            {
+                if(_disableAfterAnimation)
+                    gameObject.SetActive(false);
+                
                 _currentSprite = 0;
+            }
         }
         
         private void OnEnable()
         {
+            float cooldown = 1f / _rate;
             _currentSprite = 0;
-            InvokeRepeating(nameof(ChangeSprite), 0, 1f / _rate);
+            _renderer.sprite = _sprites[_currentSprite];
+            InvokeRepeating(nameof(ChangeSprite), cooldown, cooldown);
         }
 
         private void OnDisable()
