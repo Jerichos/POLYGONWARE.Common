@@ -2,6 +2,6 @@
 {
     public interface IControllable
     {
-        void TakeControl(IControllable owner);
+        void TakeControl(IController owner);
     }
 }

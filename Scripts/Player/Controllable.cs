@@ -4,9 +4,10 @@ namespace Common
 {
     public class Controllable : MonoBehaviour, IControllable
     {
-        public virtual void TakeControl(IControllable owner)
+        public IController Owner { get; private set; }
+        public virtual void TakeControl(IController owner)
         {
-            
+            Owner = owner;
         }
     }
 }
