@@ -2,7 +2,7 @@
 
 namespace Common
 {
-    public class KillOffScreen : MonoBehaviour
+    public class DisableOffScreen : MonoBehaviour
     {
         private void OnEnable()
         {
@@ -19,6 +19,10 @@ namespace Common
             if (!CameraManager2D.Instance.IsOnScreen(transform.position, Vector2.one * 2))
             {
                 gameObject.SetActive(false);
+                
+                var pooled = GetComponent<PooledObject>();
+                if (pooled)
+                    PoolSystem.ReturnInstance(pooled);
             }
         }
     }
