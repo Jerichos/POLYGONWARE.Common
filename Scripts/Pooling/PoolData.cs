@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Common.Pooling
+namespace Common
 {
     [Serializable]
     public struct PoolData
@@ -13,14 +11,17 @@ namespace Common.Pooling
         public PooledObject Prefab;
         public int MinCount;
         public int MaxCount;
-        private int Count;
         
         public Queue<PooledObject> Instances;
+        
+        private int Count;
+        private Transform _parent;
 
-        public void Initialize()
+        public void Initialize(Transform parent)
         {
             Instances = new Queue<PooledObject>();
             Count = 0;
+            _parent = parent;
 
             for (int i = 0; i < MinCount; i++)
             {
@@ -30,7 +31,8 @@ namespace Common.Pooling
 
         private void EnqueueNewInstance()
         {
-            var instance = Object.Instantiate(Prefab);
+            var instance = Object.Instantiate(Prefab, _parent);
+            instance.gameObject.SetActive(false);
             Instances.Enqueue(instance);
             Count++;
         }

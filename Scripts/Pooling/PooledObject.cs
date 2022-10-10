@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
 
-namespace Common.Pooling
+namespace Common
 {
     public class PooledObject : MonoBehaviour
     {
-        public readonly uint PrefabID;
+        [HideInInspector] public uint PrefabID;
+
+        public virtual void SetActive(bool value)
+        {
+            gameObject.SetActive(value);
+        }
     }
 }

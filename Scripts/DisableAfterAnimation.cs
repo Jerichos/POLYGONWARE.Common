@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace Common
 {
-    public class DisableAfterAnimation : MonoBehaviour
+    public class DisableAfterAnimation : PooledObject
     {
         [SerializeField] private Animator _animator;
 
-        private void Start()
+        private void OnEnable()
         {
             Invoke(nameof(DisableMe), _animator.runtimeAnimatorController.animationClips[0].length);
         }
@@ -15,6 +15,7 @@ namespace Common
         private void DisableMe()
         {
             gameObject.SetActive(false);
+            PoolSystem.ReturnInstance(this);
         }
     }
 }

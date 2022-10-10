@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-namespace Common.Pooling
+namespace Common
 {
     public class PoolSystem : Singleton<PoolSystem>
     {
-        [SerializeField] private PoolData[] _pooledPrefabs;
+        [SerializeField] private List<PoolData> _pooledPrefabs;
 
-        private readonly Dictionary<uint, PoolData> PooledInstances = new();
+        private static readonly Dictionary<uint, PoolData> PooledInstances = new();
 
         protected override void Awake()
         {
@@ -19,7 +20,7 @@ namespace Common.Pooling
             }
         }
 
-        public void RegisterPrefab(PoolData poolData)
+        public static void RegisterPrefab(PoolData poolData)
         {
             if (PooledInstances.ContainsKey(poolData.Prefab.PrefabID))
             {
@@ -27,18 +28,35 @@ namespace Common.Pooling
                 return;
             }
             
-            poolData.Initialize();
+            poolData.Initialize(Instance.transform);
             PooledInstances.Add(poolData.Prefab.PrefabID, poolData);
         }
 
-        public PooledObject GetInstance(uint prefabID)
+        public static PooledObject GetInstance(uint prefabID)
         {
             return PooledInstances[prefabID].GetInstance();
         }
 
-        public void ReturnInstance(PooledObject instance)
+        public static void ReturnInstance(PooledObject instance)
         {
             PooledInstances[instance.PrefabID].ReturnInstance(instance);
         }
+        
+        #if UNITY_EDITOR
+        public void AddPoolData(PoolData poolData)
+        {
+            for (int i = 0; i < _pooledPrefabs.Count; i++)
+            {
+                if (_pooledPrefabs[i].Prefab.PrefabID == poolData.Prefab.PrefabID)
+                {
+                    Debug.LogError("There is already prefab with same ID in the PooledPrefabs. " + " ID: " + poolData.Prefab.PrefabID);
+                    return;
+                }
+            }
+            
+            _pooledPrefabs.Add(poolData);
+            Debug.Log("Added prefab to the pooling list. " + poolData.Prefab.name + " ID: " + poolData.Prefab.PrefabID);
+        }
+        #endif
     }
 }
