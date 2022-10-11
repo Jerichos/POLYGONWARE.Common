@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Common
 {
+    [DefaultExecutionOrder(-100)]
     public static class DatabaseLoader
     {
+        private const bool LOAD_PREFAB_DATABASE = false;
+
         public static readonly Dictionary<uint, PooledObject> Prefabs = new();
         
         private const string PREFABS_PATH = "prefabs/";
@@ -12,6 +16,9 @@ namespace Common
         [RuntimeInitializeOnLoadMethod]
         private static void LoadAllPrefabs()
         {
+            if(!LOAD_PREFAB_DATABASE)
+                return;
+            
             var prefabs = Resources.LoadAll<PooledObject>(PREFABS_PATH);
             for (uint i = 0; i < prefabs.Length; i++)
             {
