@@ -13,6 +13,7 @@ namespace Common
         
         public void OnScreenEnter()
         {
+            Debug.Log("1 ENTER");
             if(_triggerOnce && _triggered)
                 return;
             
@@ -22,6 +23,7 @@ namespace Common
 
         public void OnScreenExit()
         {
+            Debug.Log("2 EXIT");
             _onScreenExit?.Invoke();
         }
     }

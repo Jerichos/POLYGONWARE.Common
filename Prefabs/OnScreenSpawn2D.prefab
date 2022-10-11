@@ -47,6 +47,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pooledPrefab: {fileID: 0}
+  _spawnCooldown: 0
+  _disableInstanceOffScreen: 0
+  _disableOffset: {x: 2, y: 2}
+  _autoName: 1
 --- !u!114 &3465460903931486604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,6 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef4fa97e508a4bf397cf3908d33e4432, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _triggerOnce: 1
   _onScreenEvent:
     m_PersistentCalls:
       m_Calls:
@@ -74,6 +79,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onScreenExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!61 &3465460903931486605
 BoxCollider2D:
   m_ObjectHideFlags: 0

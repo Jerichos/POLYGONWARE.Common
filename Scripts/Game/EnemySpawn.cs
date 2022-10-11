@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Common
@@ -9,6 +10,8 @@ namespace Common
         
         [Tooltip("Spawn periodically in seconds. 0 means do NOT spawn repeatedly.")] 
         [SerializeField] private float _spawnCooldown = 0;
+        [SerializeField] private bool _disableInstanceOffScreen = false;
+        [SerializeField] private Vector2 _disableOffset = Vector2.one * 2;
         
         public void Spawn()
         {
@@ -20,14 +23,36 @@ namespace Common
             
             var instance = PoolSystem.GetInstance(_pooledPrefab.PrefabID);
             instance.transform.position = transform.position;
+
+            if (_disableInstanceOffScreen)
+            {
+                var disableScript = instance.transform.GetComponent<DisableOffScreen>();
+                if (!disableScript)
+                {
+                    disableScript = instance.transform.AddComponent<DisableOffScreen>();
+                }
+                disableScript.Offset = _disableOffset;
+            }
+            
             instance.gameObject.SetActive(true);
             
             if(_spawnCooldown > 0)
                 Invoke(nameof(Spawn), _spawnCooldown);
         }
 
+        public void DelayedSpawn(float seconds)
+        {
+            Invoke(nameof(Spawn), seconds);
+        }
+
+        public void Stop()
+        {
+            CancelInvoke();
+        }
+
 #if UNITY_EDITOR
-        private bool _autoName = true;
+        [Header("Editor")]
+        [SerializeField] private bool _autoName = true;
         private void OnValidate()
         {
             if(!_autoName)
@@ -38,6 +63,10 @@ namespace Common
                 gameObject.name = "Spawn: " + _pooledPrefab.name;
                 if (_spawnCooldown > 0)
                     gameObject.name += " e" + _spawnCooldown + "s";
+            }
+            else
+            {
+                gameObject.name = "Enemy Spawn";
             }
         }
 #endif

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Common
 {
@@ -12,18 +13,16 @@ namespace Common
         [SerializeField] private Vector2 _direction = Vector2.right;
 
         [SerializeField] private Vector2 _size;
-        private RaycastHit2D[] _results;
         private int _count;
 
         private float _distance;
         private Vector3 _origin;
 
-        private readonly Dictionary<int, IOnScreenTrigger> _onScreenTriggers = new();
+        private readonly RaycastHit2D[] _results = new RaycastHit2D[25]; //!! Length is the limit of triggers can appear on the screen at one time !!
+        private readonly List<TriggerData> _onScreenTriggers = new();
 
         private void Awake()
         {
-            _results = new RaycastHit2D[25];
-            
             var aspect = (float)Screen.currentResolution.width / Screen.currentResolution.height;
             var orthoSize = _camera.orthographicSize;
             
@@ -33,17 +32,54 @@ namespace Common
             _distance = _size.x;
         }
 
+        // TODO: What about making rigidbody and check OnTriggerEnter/Exit instead?
         private void TriggerOnScreen()
         {
             Debug.Log(name + " BoxCastNonAlloc");
             _origin = _camera.transform.position;
             _origin.x -= _size.x;
             _count = Physics2D.BoxCastNonAlloc(_origin, _size, _angle, _direction, _results, _distance, _hitLayer);
-            
+
             for (int i = 0; i < _count; i++)
             {
-                var trigger = _results[i].transform.GetComponent<IOnScreenTrigger>();
-                _results[i].transform.gameObject.GetInstanceID();
+                var instanceID = _results[i].transform.GetInstanceID();
+                bool add = true;
+
+                for (int j = 0; j < _onScreenTriggers.Count; j++)
+                {
+                    if (_onScreenTriggers[j].ID == instanceID)
+                    {
+                        add = false;
+                        break;
+                    }
+                }
+
+                if (add)
+                {
+                    var trigger = _results[i].transform.GetComponent<IOnScreenTrigger>();
+                    trigger.OnScreenEnter();
+                    TriggerData data = new TriggerData { ID = instanceID, Trigger = trigger};
+                    _onScreenTriggers.Add(data);
+                }
+            }
+
+            for (int i = 0; i < _onScreenTriggers.Count; i++)
+            {
+                bool remove = true;
+                for (int j = 0; j < _count; j++)
+                {
+                    if (_onScreenTriggers[i].ID == _results[j].transform.GetInstanceID())
+                    {
+                        remove = false;
+                        break;
+                    }
+                }
+
+                if (remove)
+                {
+                    _onScreenTriggers[i].Trigger.OnScreenExit();
+                    _onScreenTriggers.RemoveAt(i);
+                }
             }
         }
 
@@ -55,6 +91,8 @@ namespace Common
         private void OnDisable()
         {
             _onScreenTriggers.Clear();
+            
+            
             CancelInvoke();
         }
 
@@ -111,5 +149,11 @@ namespace Common
             Gizmos.DrawLine(p3, p7);
             Gizmos.DrawLine(p4, p8);
         }
+    }
+
+    public struct TriggerData
+    {
+        public int ID;
+        public IOnScreenTrigger Trigger;
     }
 }
