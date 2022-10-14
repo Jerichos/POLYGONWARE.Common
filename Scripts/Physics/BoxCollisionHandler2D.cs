@@ -1,5 +1,4 @@
-﻿using Unity.VisualScripting.Dependencies.NCalc;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Common
 {
@@ -14,112 +13,122 @@ namespace Common
         private float _length;
         private float _verticalRadius;
         private float _horizontalRadius;
-        private float _skin;
         private float _verticalRange;
         private float _horizontalRange;
         private float _verticalSpace;
         private float _horizontalSpace;
         private Vector2 _rayOrigin;
-        private Vector2 _rayPos;
-
-        public RaycastHit2D[] Hits;
 
         public CollisionData Collisions;
+        public RaycastHit2D ClosestHit;
         
         private BoxCollider2D _collider;
 
-        private Vector2 Center => _collider.transform.position + Vector3.up * _collider.bounds.extents.y;
+        private Vector2 _bottomLeft     => (Vector2)_transform.position + _localBottomLeft;
+        private Vector2 _bottomRight    => (Vector2)_transform.position + _localBottomRight;
+        private Vector2 _topLeft        => (Vector2)_transform.position + _localTopLeft;
+        private Vector2 _topRight       => (Vector2)_transform.position + _localTopRight;
 
-        public BoxCollisionHandler2D(BoxCollider2D collider, LayerMask layer, float maxGap = 0.1f, float skin = 0.15f, float rangeSquish = 0.98f)
+        private Vector2 _localBottomLeft;
+        private Vector2 _localBottomRight;
+        private Vector2 _localTopLeft;
+        private Vector2 _localTopRight;
+
+        private Vector2 _skinnedSize;
+        private Vector2 _fullSize;
+        private Vector2 _transformOffset;
+
+        private Vector2 _predictedOffset;
+
+        private Transform _transform;
+
+        private float _hypotenuse;
+
+        private Vector2 Center => (Vector2)_transform.position + _transformOffset;
+
+        public BoxCollisionHandler2D(Transform transform, BoxCollider2D collider, LayerMask layer, float maxRayGap = 0.1f, float skin = 0.15f)
         {
             _layer = layer;
             _collider = collider;
-
-            var size = _collider.bounds.extents * 2;
-
-            _verticalRange = size.y * rangeSquish;
-            _verticalRadius = size.y / 2;
+            _transform = transform;
             
-            _horizontalRange = size.x * rangeSquish;
-            _horizontalRadius = size.x / 2;
-            
-            _verticalRayCount = Mathf.CeilToInt(_horizontalRange / maxGap) + 1;
-            _verticalSpace = _verticalRayCount == 0? 0 : _horizontalRange / _verticalRayCount;
-            
-            Debug.Log("VerticalRayCount: " + _verticalRayCount + " horizontalRange: " + _horizontalRange + " maxGap: " + maxGap);
-            
-            _horizontalRayCount = Mathf.CeilToInt(_verticalRange / maxGap) + 1;
-            _horizontalSpace = _horizontalRayCount == 0? 0 : _verticalRange / _horizontalRayCount;
-            
-            _verticalRange /= 2;
-            _horizontalRange /= 2;
-            
-            _skin = skin;
+            UpdateCollider(collider, maxRayGap, skin);
         }
-        
-        public void UpdateCollider(BoxCollider2D collider, float maxGap = 0.4f, float skin = 0.15f, float rangeSquish = 0.98f)
+
+        public void UpdateCollider(BoxCollider2D collider, float maxRayGap = 0.4f, float skin = 0.15f)
         {
             _collider = collider;
-            
-            var size = _collider.size;
 
-            _verticalRange = size.y * rangeSquish;
-            _verticalRadius = size.y / 2;
+            var bounds = _collider.bounds;
+            bounds.Expand(skin * -2);
             
-            _horizontalRange = size.x * rangeSquish;
-            _horizontalRadius = size.x / 2;
             
-            _verticalRayCount = Mathf.CeilToInt(_horizontalRange / maxGap) + 1;
-            _verticalSpace = _verticalRayCount == 0? 0 : _verticalRange / _verticalRayCount;
-            _verticalRange /= 2;
+            _skinnedSize = bounds.size;
+            _fullSize = collider.bounds.size;
+            Debug.Log("Skin: " + skin + " FullSize: " + _fullSize + " SkinnedSize: " + _skinnedSize);
+
+            _hypotenuse = Mathf.Sqrt(Mathf.Pow(_skinnedSize.x, 2) + Mathf.Pow(_skinnedSize.x, 2));
+
+            _transformOffset = collider.bounds.center - collider.transform.position;
             
-            Debug.Log("VerticalRayCount: " + _verticalRayCount + " horizontalRange: " + _horizontalRange + " maxGap: " + maxGap);
+            _localBottomLeft    = new Vector2(-bounds.extents.x, 0)     + _transformOffset;
+            _localBottomRight   = new Vector2(0, -bounds.extents.y)      + _transformOffset;
+            _localTopLeft       = new Vector2(-bounds.extents.x, 0)      + _transformOffset;
+            _localTopRight      = new Vector2(0, bounds.extents.y)       + _transformOffset;
+                
+            if (bounds.size.y < maxRayGap)
+                maxRayGap = bounds.size.y;
+            if (bounds.size.x < maxRayGap)
+                maxRayGap = bounds.size.x;
             
-            _horizontalRayCount = Mathf.CeilToInt(_verticalRange / maxGap) + 1;
-            _horizontalSpace = _horizontalRayCount == 0? 0 : _verticalRange / _verticalRayCount;
-            _horizontalRange /= 2;
+            _horizontalRayCount = Mathf.FloorToInt(bounds.size.y / maxRayGap) + 1;
+            _verticalRayCount = Mathf.FloorToInt(bounds.size.x / maxRayGap) + 1;
             
-            _skin = skin;
+            _horizontalSpace = bounds.size.y / (_horizontalRayCount - 1);
+            _verticalSpace = bounds.size.x / (_verticalRayCount - 1);
+            
+            Debug.Log("_horizontalRayCount: " + _horizontalRayCount + " space: " + _horizontalSpace);
         }
 
-        public void CheckVerticalCollision(float speed)
+        public void CheckVerticalCollision(ref Vector2 velocity, bool snap)
         {
-            if (speed > 0)
-                Collisions.Up = CheckCollisionUp(speed);
-            else if (speed < 0)
-                Collisions.Down = CheckCollisionDown(speed);
+            if (velocity.y > 0)
+                Collisions.Up = CheckCollisionUp(ref velocity, snap);
+            else if (velocity.y < 0)
+                Collisions.Down = CheckCollisionDown(ref velocity, snap);
         }
 
-        public void CheckHorizontalCollision(float speed)
+        public void CheckHorizontalCollision(ref Vector2 velocity, bool snap)
         {
-            if (speed > 0)
-                Collisions.Right = CheckCollisionRight(speed);
-            else if (speed < 0)
-                Collisions.Left = CheckCollisionLeft(speed);
+            if (velocity.x > 0)
+                Collisions.Right = CheckCollisionRight(ref velocity, snap);
+            else if (velocity.x < 0)
+                Collisions.Left = CheckCollisionLeft(ref velocity, snap);
         }
 
-        public bool CheckDiagonalCollision(Vector2 velocity)
+        public bool CheckDiagonalCollision(ref Vector2 velocity, bool snap)
         {
-            var direction = velocity.normalized;
+            var direction = new Vector2(Mathf.Sign(velocity.x), Mathf.Sign(velocity.y)).normalized;
             
-            _length = velocity.magnitude * Time.deltaTime;
-
-            Vector2 corner = new Vector2(Mathf.Sign(direction.x) * _horizontalRange, Mathf.Sign(direction.y) * _verticalRange);
-            
-            _rayOrigin = Center + corner;
+            _length = _hypotenuse;
+            _rayOrigin = Center;
 
             Hit = Physics2D.Raycast(_rayOrigin, direction, _length, _layer);
 
             if (Hit)
             {
                 Debug.DrawLine(_rayOrigin, Hit.point, Color.red);
-                
-                // I guess in diagonal scenario we should not snap...
-                // But let's snap horizontally
-                var position = _collider.transform.position;
-                position.x = Hit.point.x - (_horizontalRadius * Mathf.Sign(direction.x));
-                position.y = direction.y > 0? Hit.point.y - _collider.size.y : Hit.point.y;
-                _collider.transform.position = position;
+
+                if (snap)
+                {
+                    // var position = _collider.transform.position;
+                    // position.x = Hit.point.x - _fullSize.x / 2f * Mathf.Sign(direction.x);
+                    // position.y = direction.y > 0? Hit.point.y - _fullSize.y * 2 : Hit.point.y;
+                    // _collider.transform.position = position;
+                    
+                    Debug.Log("Snap Diagonal");
+                    velocity.x = 0;
+                }
                 
                 Collisions.Diagonal = true;
                 
@@ -130,10 +139,9 @@ namespace Common
             return false;
         }
 
-        public bool CheckCollisionUp(float speed)
+        public bool CheckCollisionUp(ref Vector2 velocity, bool snap)
         {
-            _length = (Mathf.Abs(speed) * Time.deltaTime) + _verticalRadius;
-            _rayOrigin = Center - _horizontalRange * Vector2.right;
+            _length = _fullSize.y / 2 + Mathf.Abs(velocity.y) * Time.deltaTime;
             
             var collision = false;
             var _closestHit = new RaycastHit2D
@@ -141,11 +149,12 @@ namespace Common
                 distance = float.MaxValue
             };
             
-            for (int i = 0; i < _verticalRayCount + 1; i++)
+            for (int i = 0; i < _verticalRayCount; i++)
             {
-                _rayPos = _rayOrigin + Vector2.right * (i * _verticalSpace);
+                _rayOrigin = _bottomLeft + _predictedOffset;
+                _rayOrigin += Vector2.right * (i * _verticalSpace);
 
-                Hit = Physics2D.Raycast(_rayPos, Vector2.up, _length, _layer);
+                Hit = Physics2D.Raycast(_rayOrigin, Vector2.up, _length, _layer);
                 
                 if (Hit)
                 {
@@ -153,26 +162,26 @@ namespace Common
                         _closestHit = Hit;
                     
                     collision = true;
-                    Debug.DrawLine(_rayPos, Hit.point, Color.red);
+                    Debug.DrawLine(_rayOrigin, Hit.point, Color.red);
                 }
                 else
-                    Debug.DrawRay(_rayPos, Vector2.up * (_length), Color.cyan);
+                    Debug.DrawRay(_rayOrigin, Vector2.up * (_length), Color.cyan);
             }
             
-            if (collision)
+            if (collision && snap)
             {
                 var position = _collider.transform.position;
-                position.y = _closestHit.point.y - _collider.size.y;
+                position.y = _closestHit.point.y - _fullSize.y;
                 _collider.transform.position = position;
+                velocity.y = 0;
             }
 
             return collision;
         }
         
-        public bool CheckCollisionDown(float speed)
+        public bool CheckCollisionDown(ref Vector2 velocity, bool snap)
         {
-            _length = (Mathf.Abs(speed) * Time.deltaTime) + _verticalRadius;
-            _rayOrigin = Center - _horizontalRange * Vector2.right;
+            _length = _fullSize.y / 2 + Mathf.Abs(velocity.y) * Time.deltaTime;
 
             var collision = false;
             var _closestHit = new RaycastHit2D
@@ -180,12 +189,13 @@ namespace Common
                 distance = float.MaxValue
             };
 
-            for (int i = 0; i < _verticalRayCount + 1; i++)
+            for (int i = 0; i < _verticalRayCount; i++)
             {
-                _rayPos = _rayOrigin + Vector2.right * (i * _verticalSpace);
-                // Debug.Log(i + " Ray " + _rayOrigin+ " _length " + _length+ " _rayPos " + _rayPos+ " direction " + Vector2.down);
+                _rayOrigin = _bottomLeft + _predictedOffset;
+                _rayOrigin += Vector2.right * (i * _verticalSpace);
+                Debug.Log(i + " _rayOrigin " + _rayOrigin + " _length " + _length + " _verticalSpace " + _verticalSpace);
 
-                Hit = Physics2D.Raycast(_rayPos, Vector2.down, _length, _layer);
+                Hit = Physics2D.Raycast(_rayOrigin, Vector2.down, _length, _layer);
                 
                 if (Hit)
                 {
@@ -193,26 +203,28 @@ namespace Common
                         _closestHit = Hit;
 
                     collision = true;
-                    Debug.DrawLine(_rayPos, Hit.point, Color.red);
+                    Debug.DrawLine(_rayOrigin, Hit.point, Color.red);
                 }
                 else
-                    Debug.DrawRay(_rayPos, Vector2.down * (_length), Color.cyan);
+                    Debug.DrawRay(_rayOrigin, Vector2.down * _length, Color.cyan);
             }
 
-            if (collision)
+            if (collision && snap)
             {
                 var position = _collider.transform.position;
                 position.y = _closestHit.point.y;
                 _collider.transform.position = position;
+                
+                Debug.Log("Snap Down");
+                velocity.y = 0;
             }
 
             return collision;
         }
         
-        public bool CheckCollisionRight(float speed)
+        public bool CheckCollisionRight(ref Vector2 velocity, bool snap)
         {
-            _length = (Mathf.Abs(speed) * Time.deltaTime) + _horizontalRadius;
-            _rayOrigin = Center + Vector2.down * _verticalRange;
+            _length = _fullSize.x / 2 + Mathf.Abs(velocity.x) * Time.deltaTime;
             
             var collision = false;
             var _closestHit = new RaycastHit2D
@@ -220,11 +232,13 @@ namespace Common
                 distance = float.MaxValue
             };
             
-            for (int i = 0; i < _horizontalRayCount + 1; i++)
+            for (int i = 0; i < _horizontalRayCount; i++)
             {
-                _rayPos = _rayOrigin + Vector2.up * (i * _horizontalSpace);
+                _rayOrigin = _bottomRight;  
+                _rayOrigin += Vector2.up * (i * _horizontalSpace);
+                // Debug.Log(i + " _rayOrigin " + _rayOrigin + " _length " + _length + " direction " + Vector2.down);
 
-                Hit = Physics2D.Raycast(_rayPos, Vector2.right, _length, _layer);
+                Hit = Physics2D.Raycast(_rayOrigin, Vector2.right, _length, _layer);
                 
                 if (Hit)
                 {
@@ -234,27 +248,33 @@ namespace Common
                     }
 
                     collision = true;
-                    Debug.DrawLine(_rayPos, Hit.point, Color.red);
+                    Debug.DrawLine(_rayOrigin, Hit.point, Color.red);
                 }
                 else
-                    Debug.DrawRay(_rayPos, Vector2.right * (_length), Color.cyan);
+                    Debug.DrawRay(_rayOrigin, Vector2.right * _length, Color.cyan);
             }
 
             // Snap
-            if (collision)
+            if (collision && snap)
             {
                 var position = _collider.transform.position;
-                position.x = _closestHit.point.x - _horizontalRadius;
+                position.x = _closestHit.point.x - _fullSize.x / 2;
                 _collider.transform.position = position;
+                
+                Debug.Log("Snap Right");
+                velocity.x = 0;
+            }
+            else
+            {
+                _predictedOffset = (Vector2.right) * (velocity.x * Time.deltaTime);
             }
             
             return collision;
         }
         
-        public bool CheckCollisionLeft(float speed)
+        public bool CheckCollisionLeft(ref Vector2 velocity, bool snap)
         {
-            _length = (Mathf.Abs(speed) * Time.deltaTime) + _horizontalRadius;
-            _rayOrigin = Center + Vector2.down * _verticalRange;
+            _length = _fullSize.x / 2 + Mathf.Abs(velocity.x) * Time.deltaTime;
             
             var collision = false;
             var _closestHit = new RaycastHit2D
@@ -262,11 +282,12 @@ namespace Common
                 distance = float.MaxValue
             };
             
-            for (int i = 0; i < _horizontalRayCount + 1; i++)
+            for (int i = 0; i < _horizontalRayCount; i++)
             {
-                _rayPos = _rayOrigin + Vector2.up * (i * _horizontalSpace);
+                _rayOrigin = _bottomRight;
+                _rayOrigin += Vector2.up * (i * _horizontalSpace);
 
-                Hit = Physics2D.Raycast(_rayPos, Vector2.left, _length, _layer);
+                Hit = Physics2D.Raycast(_rayOrigin, Vector2.left, _length, _layer);
                 
                 if (Hit)
                 {
@@ -277,26 +298,49 @@ namespace Common
                     
                     collision = true;
                     
-                    Debug.DrawLine(_rayPos, Hit.point, Color.red);
+                    Debug.DrawLine(_rayOrigin, Hit.point, Color.red);
                 }
                 else
-                    Debug.DrawRay(_rayPos, Vector2.left * (_length), Color.cyan);
+                    Debug.DrawRay(_rayOrigin, Vector2.left * (_length), Color.cyan);
             }
             
             // Snap
-            if (collision)
+            if (collision && snap)
             {
                 var position = _collider.transform.position;
-                position.x = _closestHit.point.x + _horizontalRadius;
+                position.x = _closestHit.point.x + _fullSize.x / 2;
                 _collider.transform.position = position;
+                
+                velocity.x = 0;
+            }
+            else
+            {
+                _predictedOffset = (Vector2.right) * (velocity.x * Time.deltaTime);
             }
 
             return collision;
         }
 
-        public void ResetCollisions()
+        public void SnapToClosestHit(Vector2 velocity)
+        {
+            var position = _collider.transform.position;
+            _collider.transform.position = position;
+        }
+
+        public void ResetHandler()
         {
             Collisions = new CollisionData();
+            ClosestHit = new RaycastHit2D();
+            _predictedOffset = Vector2.zero;
+        }
+        
+        public void DrawGizmo()
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(_bottomLeft, 0.05f);
+            Gizmos.DrawSphere(_bottomRight, 0.05f);
+            Gizmos.DrawSphere(_topLeft, 0.05f);
+            Gizmos.DrawSphere(_topRight, 0.05f);
         }
     }
 }

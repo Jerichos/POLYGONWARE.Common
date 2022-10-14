@@ -9,12 +9,14 @@ namespace Common
     public class BoxPhysics2D : MonoBehaviour
     {
         [SerializeField] private LayerMask _collisionLayer;
+
+        public Vector2 _lastVelocity;
         
         [Header("References")]
         [SerializeField] private BoxCollider2D _collider;
         [SerializeField] private Transform _transform;
 
-        private BoxCollisionHandler2D _collisionHandler;
+        private BoxCollisionHandler2D _handler;
         private Vector2 _velocity;
 
         private bool _grounded;
@@ -33,48 +35,22 @@ namespace Common
 
         private void Awake()
         {
-            _collisionHandler = new BoxCollisionHandler2D(_collider, _collisionLayer, 1f);
+            _handler = new BoxCollisionHandler2D(_transform, _collider, _collisionLayer, 0.1f);
         }
 
         private void LateUpdate()
         {
-            _collisionHandler.ResetCollisions();
-            _collisionHandler.CheckVerticalCollision(_velocity.y);
+            _handler.ResetHandler();
 
-            if (_collisionHandler.Collisions.Up)
-            {
-                _velocity.y = 0;
-            }
+            _handler.CheckHorizontalCollision(ref _velocity, true);
+            _handler.CheckVerticalCollision(ref _velocity, true);
             
-            if (_collisionHandler.Collisions.Down)
-            {
-                Grounded = true;
-                _velocity.y = 0;
-            }
-            else
-            {
-                Grounded = false;
-            }
+            if(_velocity.x != 0 && _velocity.y != 0)
+                _handler.CheckDiagonalCollision(ref _velocity, true);
 
-            _collisionHandler.CheckHorizontalCollision(_velocity.x);
-
-            if (_collisionHandler.Collisions.Right || _collisionHandler.Collisions.Left)
-            {
-                _velocity.x = 0;
-            }
-
-            if (!_collisionHandler.Collisions.Right && !_collisionHandler.Collisions.Left)
-            {
-                _collisionHandler.CheckDiagonalCollision(_velocity);
-            }
-            
-            if (_collisionHandler.Collisions.Diagonal)
-            {
-                _velocity.x = 0;
-                _velocity.y = 0;
-            }
-            
             _transform.Translate(_velocity * Time.deltaTime);
+            _lastVelocity = _velocity;
+            Debug.Log("LastVelocity: " + _lastVelocity + " Collisions: " + _handler.Collisions);
             _velocity = Vector2.zero; // Maximum Drag
         }
 
@@ -88,19 +64,13 @@ namespace Common
             _collider = GetComponent<BoxCollider2D>();
             _transform = transform;
         }
-    }
 
-    public struct CollisionData
-    {
-        public bool Up;
-        public bool Down;
-        public bool Right;
-        public bool Left;
-        public bool Diagonal;
-
-        public override string ToString()
+        private void OnDrawGizmos()
         {
-            return "UP: " + Up + " DOWN: " + Down + " RIGHT: " + Right + " LEFT: " + Left + " DIAGONAL:" + Diagonal;
+            if(Application.isPlaying == false)
+                _handler = new BoxCollisionHandler2D(_transform, _collider, _collisionLayer, 0.1f);
+    
+            _handler.DrawGizmo();
         }
     }
 }
