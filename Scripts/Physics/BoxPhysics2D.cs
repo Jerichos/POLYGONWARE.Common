@@ -1,5 +1,7 @@
 ﻿using System;
+using TMPro.EditorUtilities;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Common
 {
@@ -31,22 +33,18 @@ namespace Common
 
         private void Awake()
         {
-            _collisionHandler = new BoxCollisionHandler2D(_collider, _collisionLayer, 0.4f);
-        }
-
-        // TODO: Remove _motorVelocity
-        private void Update()
-        {
-            Move(_motorVelocity);
+            _collisionHandler = new BoxCollisionHandler2D(_collider, _collisionLayer, 1f);
         }
 
         private void LateUpdate()
         {
+            _collisionHandler.ResetCollisions();
             _collisionHandler.CheckVerticalCollision(_velocity.y);
-            _collisionHandler.CheckHorizontalCollision(_velocity.x);
 
             if (_collisionHandler.Collisions.Up)
+            {
                 _velocity.y = 0;
+            }
             
             if (_collisionHandler.Collisions.Down)
             {
@@ -58,12 +56,24 @@ namespace Common
                 Grounded = false;
             }
 
-            if (_collisionHandler.Collisions.Right)
+            _collisionHandler.CheckHorizontalCollision(_velocity.x);
+
+            if (_collisionHandler.Collisions.Right || _collisionHandler.Collisions.Left)
+            {
                 _velocity.x = 0;
-            else if (_collisionHandler.Collisions.Left)
-                _velocity.x = 0;
+            }
+
+            if (!_collisionHandler.Collisions.Right && !_collisionHandler.Collisions.Left)
+            {
+                _collisionHandler.CheckDiagonalCollision(_velocity);
+            }
             
-            Debug.Log("Move: " + _velocity);
+            if (_collisionHandler.Collisions.Diagonal)
+            {
+                _velocity.x = 0;
+                _velocity.y = 0;
+            }
+            
             _transform.Translate(_velocity * Time.deltaTime);
             _velocity = Vector2.zero; // Maximum Drag
         }
@@ -78,11 +88,6 @@ namespace Common
             _collider = GetComponent<BoxCollider2D>();
             _transform = transform;
         }
-
-#if UNITY_EDITOR
-        [Header("Editor Test")]
-        [SerializeField] private Vector2 _motorVelocity;
-#endif
     }
 
     public struct CollisionData
@@ -91,5 +96,11 @@ namespace Common
         public bool Down;
         public bool Right;
         public bool Left;
+        public bool Diagonal;
+
+        public override string ToString()
+        {
+            return "UP: " + Up + " DOWN: " + Down + " RIGHT: " + Right + " LEFT: " + Left + " DIAGONAL:" + Diagonal;
+        }
     }
 }

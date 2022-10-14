@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting.Dependencies.NCalc;
+using UnityEngine;
 
 namespace Common
 {
@@ -27,15 +28,17 @@ namespace Common
         
         private BoxCollider2D _collider;
 
+        private Vector2 Center => _collider.transform.position + Vector3.up * _collider.bounds.extents.y;
+
         public BoxCollisionHandler2D(BoxCollider2D collider, LayerMask layer, float maxGap = 0.1f, float skin = 0.15f, float rangeSquish = 0.98f)
         {
             _layer = layer;
             _collider = collider;
-            
-            var size = _collider.size;
 
-            _verticalRadius = size.y / 2;
+            var size = _collider.bounds.extents * 2;
+
             _verticalRange = size.y * rangeSquish;
+            _verticalRadius = size.y / 2;
             
             _horizontalRange = size.x * rangeSquish;
             _horizontalRadius = size.x / 2;
@@ -60,8 +63,8 @@ namespace Common
             
             var size = _collider.size;
 
-            _verticalRadius = size.y / 2;
             _verticalRange = size.y * rangeSquish;
+            _verticalRadius = size.y / 2;
             
             _horizontalRange = size.x * rangeSquish;
             _horizontalRadius = size.x / 2;
@@ -81,9 +84,6 @@ namespace Common
 
         public void CheckVerticalCollision(float speed)
         {
-            Collisions.Up = false;
-            Collisions.Down = false;
-
             if (speed > 0)
                 Collisions.Up = CheckCollisionUp(speed);
             else if (speed < 0)
@@ -92,51 +92,94 @@ namespace Common
 
         public void CheckHorizontalCollision(float speed)
         {
-            Collisions.Right = false;
-            Collisions.Left = false;
-            
             if (speed > 0)
                 Collisions.Right = CheckCollisionRight(speed);
             else if (speed < 0)
                 Collisions.Left = CheckCollisionLeft(speed);
         }
 
+        public bool CheckDiagonalCollision(Vector2 velocity)
+        {
+            var direction = velocity.normalized;
+            
+            _length = velocity.magnitude * Time.deltaTime;
+
+            Vector2 corner = new Vector2(Mathf.Sign(direction.x) * _horizontalRange, Mathf.Sign(direction.y) * _verticalRange);
+            
+            _rayOrigin = Center + corner;
+
+            Hit = Physics2D.Raycast(_rayOrigin, direction, _length, _layer);
+
+            if (Hit)
+            {
+                Debug.DrawLine(_rayOrigin, Hit.point, Color.red);
+                
+                // I guess in diagonal scenario we should not snap...
+                // But let's snap horizontally
+                var position = _collider.transform.position;
+                position.x = Hit.point.x - (_horizontalRadius * Mathf.Sign(direction.x));
+                position.y = direction.y > 0? Hit.point.y - _collider.size.y : Hit.point.y;
+                _collider.transform.position = position;
+                
+                Collisions.Diagonal = true;
+                
+                return true;
+            }
+            
+            Debug.DrawRay(_rayOrigin, direction * _length, Color.cyan);
+            return false;
+        }
+
         public bool CheckCollisionUp(float speed)
         {
-            _length = (Mathf.Abs(speed) * Time.deltaTime) + _skin;
-            _rayOrigin = (Vector2)_collider.bounds.center + Vector2.up * _verticalRadius + Vector2.down * _skin - _horizontalRadius * Vector2.right;
+            _length = (Mathf.Abs(speed) * Time.deltaTime) + _verticalRadius;
+            _rayOrigin = Center - _horizontalRange * Vector2.right;
+            
+            var collision = false;
+            var _closestHit = new RaycastHit2D
+            {
+                distance = float.MaxValue
+            };
             
             for (int i = 0; i < _verticalRayCount + 1; i++)
             {
                 _rayPos = _rayOrigin + Vector2.right * (i * _verticalSpace);
-                // Debug.Log(i + " Ray " + _rayOrigin+ " _length " + _length+ " _rayPos " + _rayPos+ " direction " + Vector2.up);
 
                 Hit = Physics2D.Raycast(_rayPos, Vector2.up, _length, _layer);
                 
                 if (Hit)
                 {
-                    Debug.Log(_collider.transform.name + " hits " + Hit.transform.name);
-                    Debug.DrawLine(_rayPos, Hit.point, Color.red);
-
-                    // Snap here?
-                    var position = _collider.transform.position;
-                    position.y = Hit.point.y - _collider.size.y;
-                    _collider.transform.position = position;
+                    if (Hit.distance < _closestHit.distance)
+                        _closestHit = Hit;
                     
-                    return true;
+                    collision = true;
+                    Debug.DrawLine(_rayPos, Hit.point, Color.red);
                 }
-                
-                Debug.DrawRay(_rayPos, Vector2.up * (_length), Color.cyan);
+                else
+                    Debug.DrawRay(_rayPos, Vector2.up * (_length), Color.cyan);
+            }
+            
+            if (collision)
+            {
+                var position = _collider.transform.position;
+                position.y = _closestHit.point.y - _collider.size.y;
+                _collider.transform.position = position;
             }
 
-            return false;
+            return collision;
         }
         
         public bool CheckCollisionDown(float speed)
         {
-            _length = (Mathf.Abs(speed) * Time.deltaTime) + _skin;
-            _rayOrigin = (Vector2)_collider.bounds.center + Vector2.down * _verticalRadius + Vector2.up * _skin - _horizontalRadius * Vector2.right;
-            
+            _length = (Mathf.Abs(speed) * Time.deltaTime) + _verticalRadius;
+            _rayOrigin = Center - _horizontalRange * Vector2.right;
+
+            var collision = false;
+            var _closestHit = new RaycastHit2D
+            {
+                distance = float.MaxValue
+            };
+
             for (int i = 0; i < _verticalRayCount + 1; i++)
             {
                 _rayPos = _rayOrigin + Vector2.right * (i * _verticalSpace);
@@ -146,109 +189,114 @@ namespace Common
                 
                 if (Hit)
                 {
-                    Debug.Log(_collider.transform.name + " hits " + Hit.transform.name);
-                    Debug.DrawLine(_rayPos, Hit.point, Color.red);
+                    if (Hit.distance < _closestHit.distance)
+                        _closestHit = Hit;
 
-                    // Snap here?
-                    var position = _collider.transform.position;
-                    position.y = Hit.point.y;
-                    _collider.transform.position = position;
-                    return true;
+                    collision = true;
+                    Debug.DrawLine(_rayPos, Hit.point, Color.red);
                 }
-                
-                Debug.DrawRay(_rayPos, Vector2.down * (_length), Color.cyan);
+                else
+                    Debug.DrawRay(_rayPos, Vector2.down * (_length), Color.cyan);
             }
 
-            return false;
+            if (collision)
+            {
+                var position = _collider.transform.position;
+                position.y = _closestHit.point.y;
+                _collider.transform.position = position;
+            }
+
+            return collision;
         }
         
         public bool CheckCollisionRight(float speed)
         {
-            _length = (Mathf.Abs(speed) * Time.deltaTime) + _skin;
-            _rayOrigin = (Vector2)_collider.bounds.center + Vector2.right * _horizontalRadius + Vector2.left * _skin + Vector2.down * _verticalRadius;
+            _length = (Mathf.Abs(speed) * Time.deltaTime) + _horizontalRadius;
+            _rayOrigin = Center + Vector2.down * _verticalRange;
+            
+            var collision = false;
+            var _closestHit = new RaycastHit2D
+            {
+                distance = float.MaxValue
+            };
             
             for (int i = 0; i < _horizontalRayCount + 1; i++)
             {
                 _rayPos = _rayOrigin + Vector2.up * (i * _horizontalSpace);
-                // Debug.Log(i + " Ray " + _rayOrigin+ " _length " + _length+ " _rayPos " + _rayPos+ " direction " + Vector2.down);
 
                 Hit = Physics2D.Raycast(_rayPos, Vector2.right, _length, _layer);
                 
                 if (Hit)
                 {
-                    Debug.Log(_collider.transform.name + " hits " + Hit.transform.name);
-                    Debug.DrawLine(_rayPos, Hit.point, Color.red);
+                    if (Hit.distance < _closestHit.distance)
+                    {
+                        _closestHit = Hit;
+                    }
 
-                    // Snap here?
-                    var position = _collider.transform.position;
-                    position.x = Hit.point.x - _horizontalRadius;
-                    _collider.transform.position = position;
-                    return true;
+                    collision = true;
+                    Debug.DrawLine(_rayPos, Hit.point, Color.red);
                 }
-                
-                Debug.DrawRay(_rayPos, Vector2.right * (_length), Color.cyan);
+                else
+                    Debug.DrawRay(_rayPos, Vector2.right * (_length), Color.cyan);
             }
 
-            return false;
+            // Snap
+            if (collision)
+            {
+                var position = _collider.transform.position;
+                position.x = _closestHit.point.x - _horizontalRadius;
+                _collider.transform.position = position;
+            }
+            
+            return collision;
         }
         
         public bool CheckCollisionLeft(float speed)
         {
-            _length = (Mathf.Abs(speed) * Time.deltaTime) + _skin;
-            _rayOrigin = (Vector2)_collider.bounds.center + Vector2.left * _horizontalRadius + Vector2.right * _skin + Vector2.down * _verticalRadius;
+            _length = (Mathf.Abs(speed) * Time.deltaTime) + _horizontalRadius;
+            _rayOrigin = Center + Vector2.down * _verticalRange;
+            
+            var collision = false;
+            var _closestHit = new RaycastHit2D
+            {
+                distance = float.MaxValue
+            };
             
             for (int i = 0; i < _horizontalRayCount + 1; i++)
             {
                 _rayPos = _rayOrigin + Vector2.up * (i * _horizontalSpace);
-                // Debug.Log(i + " Ray " + _rayOrigin+ " _length " + _length+ " _rayPos " + _rayPos+ " direction " + Vector2.down);
 
                 Hit = Physics2D.Raycast(_rayPos, Vector2.left, _length, _layer);
                 
                 if (Hit)
                 {
-                    Debug.Log(_collider.transform.name + " hits " + Hit.transform.name);
+                    if (Hit.distance < _closestHit.distance)
+                    {
+                        _closestHit = Hit;
+                    }
+                    
+                    collision = true;
+                    
                     Debug.DrawLine(_rayPos, Hit.point, Color.red);
-
-                    // Snap here?
-                    var position = _collider.transform.position;
-                    position.x = Hit.point.x + _horizontalRadius;
-                    _collider.transform.position = position;
-                    return true;
                 }
-                
-                Debug.DrawRay(_rayPos, Vector2.left * (_length), Color.cyan);
+                else
+                    Debug.DrawRay(_rayPos, Vector2.left * (_length), Color.cyan);
+            }
+            
+            // Snap
+            if (collision)
+            {
+                var position = _collider.transform.position;
+                position.x = _closestHit.point.x + _horizontalRadius;
+                _collider.transform.position = position;
             }
 
-            return false;
+            return collision;
         }
 
-        // public bool CheckCollision(Vector2 velocity)
-        // {
-        //     Collision = false;
-        //
-        //     var direction = velocity.normalized;
-        //     _length = (velocity.magnitude * 1.001f) + _skin;
-        //     _rayOrigin = (Vector2)_boxCollider.bounds.center + direction * _radius - Axis * _verticalRange - direction * _skin;
-        //
-        //     for (int i = 0; i < _verticalRayCount + 1; i++)
-        //     {
-        //         _rayPos = _rayOrigin + Axis * (i * _verticalSpace);
-        //
-        //         Hit = Physics2D.Raycast(_rayPos, direction, _length, _layer);
-        //         
-        //         if (Hit)
-        //         {
-        //             Debug.DrawLine(_rayPos, Hit.point, Color.red);
-        //             HitRange = Vector2.Distance(_rayPos, Hit.point) - _skin;
-        //             
-        //             Collision = true;
-        //             return Collision;
-        //         }
-        //         Debug.DrawRay(_rayPos, direction * (_length), Color.blue);
-        //     }
-        //
-        //     return Collision;
-        // }
-        
+        public void ResetCollisions()
+        {
+            Collisions = new CollisionData();
+        }
     }
 }
