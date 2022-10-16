@@ -57,7 +57,7 @@ namespace Common
             _skinnedSize = bounds.size;
             _fullSize = collider.bounds.size;
 
-            _hypotenuse = Mathf.Sqrt(Mathf.Pow(_skinnedSize.x, 2) + Mathf.Pow(_skinnedSize.x, 2));
+            _hypotenuse = Mathf.Sqrt(Mathf.Pow(_fullSize.x /2, 2) + Mathf.Pow(_fullSize.y /2, 2));
 
             _transformOffset = collider.bounds.center - collider.transform.position;
             
@@ -101,9 +101,9 @@ namespace Common
 
         public bool CheckDiagonalCollision(ref Vector2 velocity, bool snap)
         {
-            var direction = new Vector2(Mathf.Sign(velocity.x), Mathf.Sign(velocity.y)).normalized;
+            var direction = new Vector2(Mathf.Sign(velocity.x) * _fullSize.x, Mathf.Sign(velocity.y) * _fullSize.y).normalized;
             
-            _length = _hypotenuse;
+            _length = _hypotenuse + velocity.magnitude;
             _rayOrigin = Center;
 
             Hit = Physics2D.Raycast(_rayOrigin, direction, _length, _layer);
