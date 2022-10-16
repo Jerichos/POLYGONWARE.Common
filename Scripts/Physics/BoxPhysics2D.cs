@@ -115,16 +115,32 @@ namespace Common
                 return Vector2.zero;
             
             _handler.CheckHorizontalCollision(ref deltaVelocity, true);
-            // _transform.Translate(Vector2.right * deltaVelocity);
             return deltaVelocity;
         }
 
-        public void PerformPush(float deltaX)
+        public Vector2 PushVerticallyVirtually(ref Vector2 deltaVelocity)
+        {
+            if (_type == PhysicsType.Static)
+                return Vector2.zero;
+            
+            _handler.CheckVerticalCollision(ref deltaVelocity, true);
+            return deltaVelocity;
+        }
+
+        public void PerformHorizontalPush(float deltaX)
         {
             if (_type == PhysicsType.Static)
                 return;
             
             _transform.Translate(deltaX * Vector2.right);
+        }
+        
+        public void PerformVerticalPush(float deltaX)
+        {
+            if (_type == PhysicsType.Static)
+                return;
+            
+            _transform.Translate(deltaX * Vector2.up);
         }
     }
 }
