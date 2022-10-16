@@ -44,7 +44,6 @@ namespace Common
         public int ID => _transform.GetInstanceID();
 
         public float Gap;
-        public float Push;
 
         private void Awake()
         {

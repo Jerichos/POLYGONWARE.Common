@@ -94,9 +94,9 @@ namespace Common
         public void CheckHorizontalCollision(ref Vector2 velocityDelta, bool snap)
         {
             if (velocityDelta.x > 0)
-                Collisions.Right = CheckCollisionRight(ref velocityDelta, snap);
+                Collisions.Right = CheckCollisionRight(ref velocityDelta);
             else if (velocityDelta.x < 0)
-                Collisions.Left = CheckCollisionLeft(ref velocityDelta, snap);
+                Collisions.Left = CheckCollisionLeft(ref velocityDelta);
         }
 
         public bool CheckDiagonalCollision(ref Vector2 velocity, bool snap)
@@ -208,7 +208,7 @@ namespace Common
             return collision;
         }
         
-        public bool CheckCollisionRight(ref Vector2 deltaVelocity, bool snap)
+        public bool CheckCollisionRight(ref Vector2 deltaVelocity)
         {
             HorizontalHits.Clear();
             
@@ -236,7 +236,6 @@ namespace Common
                         pushVelocity.x = deltaVelocity.x - gap;
                         
                         var push = otherBox.PushHorizontallyVirtually(ref pushVelocity).x;
-                        otherBox.Push = push;
                         otherBox.Gap = gap;
 
                         var delta = push + gap;
@@ -245,7 +244,6 @@ namespace Common
                         {
                             deltaVelocity.x = delta;
                         }
-
                     }
                     
                     Debug.DrawLine(_rayOrigin, Hit.point, Color.red);
@@ -259,72 +257,72 @@ namespace Common
                 if(!HorizontalHits[i])
                     continue;
 
-                HorizontalHits[i].Push = deltaVelocity.x - HorizontalHits[i].Gap;
-                HorizontalHits[i].PerformPush(HorizontalHits[i].Push);
+                HorizontalHits[i].PerformPush(deltaVelocity.x - HorizontalHits[i].Gap);
             }
 
-            // Snap
-            if (collision && snap)
-            {
-                // var position = _collider.transform.position;
-                // position.x = _closestHit.point.x - _fullSize.x / 2;
-                // _collider.transform.position = position;
-                // deltaVelocity.x = 0;
-            }
-            else
-            {
+            if(collision == false)
                 _predictedOffset = (Vector2.right) * (deltaVelocity.x * Time.deltaTime);
-            }
             
             return collision;
         }
         
-        public bool CheckCollisionLeft(ref Vector2 velocity, bool snap)
+        public bool CheckCollisionLeft(ref Vector2 deltaVelocity)
         {
-            _length = _fullSize.x / 2 + Mathf.Abs(velocity.x) * Time.deltaTime;
+            HorizontalHits.Clear();
             
+            _length = _fullSize.x / 2 + Mathf.Abs(deltaVelocity.x);
+
             var collision = false;
-            var _closestHit = new RaycastHit2D
-            {
-                distance = float.MaxValue
-            };
-            
+
             for (int i = 0; i < _horizontalRayCount; i++)
             {
-                _rayOrigin = _bottom;
+                _rayOrigin = _bottom;  
                 _rayOrigin += Vector2.up * (i * _horizontalSpace);
 
                 Hit = Physics2D.Raycast(_rayOrigin, Vector2.left, _length, _layer);
                 
                 if (Hit)
                 {
-                    if (Hit.distance < _closestHit.distance)
+                    var otherBox = HorizontalHits.Add(Hit.transform.GetInstanceID());
+                    if (otherBox)
                     {
-                        _closestHit = Hit;
+                        collision = true;
+                        
+                        Vector2 pushVelocity;
+                        pushVelocity.y = 0;
+                        var gap = (Hit.distance - _fullSize.x / 2);
+                        pushVelocity.x = deltaVelocity.x + gap;
+                        
+                        var push = otherBox.PushHorizontallyVirtually(ref pushVelocity).x;
+                        otherBox.Gap = gap;
+
+                        var delta = push - gap;
+                        
+                        Debug.Log("delta: "+ delta + " deltaVel: " + deltaVelocity);
+
+                        if (delta > deltaVelocity.x)
+                        {
+                            deltaVelocity.x = delta;
+                        }
                     }
-                    
-                    collision = true;
                     
                     Debug.DrawLine(_rayOrigin, Hit.point, Color.red);
                 }
                 else
-                    Debug.DrawRay(_rayOrigin, Vector2.left * (_length), Color.cyan);
-            }
-            
-            // Snap
-            if (collision && snap)
-            {
-                var position = _collider.transform.position;
-                position.x = _closestHit.point.x + _fullSize.x / 2;
-                _collider.transform.position = position;
-                
-                velocity.x = 0;
-            }
-            else
-            {
-                _predictedOffset = (Vector2.right) * (velocity.x * Time.deltaTime);
+                    Debug.DrawRay(_rayOrigin, Vector2.left * _length, Color.cyan);
             }
 
+            for (int i = 0; i < HorizontalHits.Length; i++)
+            {
+                if(!HorizontalHits[i])
+                    continue;
+
+                HorizontalHits[i].PerformPush(deltaVelocity.x + HorizontalHits[i].Gap);
+            }
+
+            if(collision == false)
+                _predictedOffset = (Vector2.right) * (deltaVelocity.x * Time.deltaTime);
+            
             return collision;
         }
 
