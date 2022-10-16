@@ -212,15 +212,11 @@ namespace Common
         {
             Debug.Log(_collider.transform.name + " 1 DeltaVelocityX " + deltaVelocity.x);
             _length = _fullSize.x / 2 + Mathf.Abs(deltaVelocity.x);
-            var doSnap = snap;
+
             var collision = false;
-            var _closestHit = new RaycastHit2D
-            {
-                distance = float.MaxValue
-            };
-            
-            float minPush = float.PositiveInfinity;
-            float minGap = float.PositiveInfinity;
+
+            float maxPush = deltaVelocity.x;
+            float minGap = 0;
             
             for (int i = 0; i < _horizontalRayCount; i++)
             {
@@ -240,21 +236,22 @@ namespace Common
                         var gap = (Hit.distance - _fullSize.x / 2);
                         pushVelocity.x = deltaVelocity.x - gap;
                         
-                        Debug.Log(_transform.name + "PushVelocity: " + pushVelocity.x);
                         var pushed = otherBox.PushHorizontally(ref pushVelocity);
-
-                        if (gap < minGap)
+                        otherBox.Push = pushed.x;
+                        
+                        if (gap < minGap || minGap == 0)
                         {
                             minGap = gap;
-                            Debug.Log(_transform.name + " set min gap: " + gap);
+                            _transform.DebugLog("Set MinGap: " + minGap);
                         }
                         
-                        Debug.Log(_transform.name + " pushed.x " + pushed.x);
-
-                        if (pushed.x < minPush)
+                        _transform.DebugLog("Set maxPush: "  + maxPush + " pushed: " + pushed.x);
+                        
+                        if (pushed.x < maxPush)
                         {
-                            minPush = pushed.x;
-                            Debug.Log(_transform.name + " set min push: " + minPush);
+                            minGap = gap;
+                            maxPush = pushed.x;
+                            _transform.DebugLog("Set MaxPush: " + minGap);
                         }
                         
                     }
@@ -265,15 +262,22 @@ namespace Common
                     Debug.DrawRay(_rayOrigin, Vector2.right * _length, Color.cyan);
             }
 
-            // deltaVelocity.x = minPush - minGap;
+            deltaVelocity.x = maxPush + minGap;
+
+            float actualMove = maxPush + minGap;
+            
+            Debug.Log("ActualMove: " + actualMove + " MinGap: " + minGap + " MaxPush: " + maxPush);
 
             for (int i = 0; i < HorizontalHits.Length; i++)
             {
                 if(!HorizontalHits[i])
                     continue;
-                
-                Debug.Log("PerformPush minPush: " + minPush);
-                HorizontalHits[i].PerformPush(minPush);
+
+                if (HorizontalHits[i].Push > actualMove)
+                    HorizontalHits[i].Push = actualMove;
+
+                Debug.Log(_transform.name + " " + i + " PerformPush: " + HorizontalHits[i].Push);
+                HorizontalHits[i].PerformPush(HorizontalHits[i].Push);
             }
 
             // Snap

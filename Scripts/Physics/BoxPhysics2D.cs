@@ -44,6 +44,7 @@ namespace Common
         public int ID => _transform.GetInstanceID();
 
         public float Distance;
+        public float Push;
 
         private void Awake()
         {
@@ -118,6 +119,9 @@ namespace Common
 
         public void PerformPush(float deltaX)
         {
+            if (_type == PhysicsType.Static)
+                return;
+            
             _transform.Translate(deltaX * Vector2.right);
         }
     }

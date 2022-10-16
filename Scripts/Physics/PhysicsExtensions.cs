@@ -14,28 +14,33 @@ namespace Common
 
         public static BoxPhysics2D Add(this BoxPhysics2D[] hits, int instanceID)
         {
-            int freeID = -1;
+            // int freeID = -1;
             
             for (int i = 0; i < hits.Length; i++)
             {
-                if (!hits[i])
+                if (hits[i])
                 {
-                    freeID = i;
+                    if(hits[i].ID == instanceID)
+                        return null;
+                    
                     continue;
                 }
-                
-                if(hits[i].ID == instanceID)
-                    return null;
-            }
 
-            if (freeID != -1)
-            {
+                
                 var boxPhysics = PhysicsWorld2D.Get(instanceID);
-                hits[freeID] = boxPhysics;
+                hits[i] = boxPhysics;
+                Debug.Log("added " + boxPhysics.name);
                 return boxPhysics;
             }
+
+            // if (freeID != -1)
+            // {
+            //     var boxPhysics = PhysicsWorld2D.Get(instanceID);
+            //     hits[freeID] = boxPhysics;
+            //     return boxPhysics;
+            // }
             
-            Debug.LogWarning("No space in hits.");
+            // Debug.LogWarning("No space in hits.");
             return null;
         }
     }
