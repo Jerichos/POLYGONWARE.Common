@@ -43,7 +43,7 @@ namespace Common
         public PhysicsType Type => _type;
         public int ID => _transform.GetInstanceID();
 
-        public float Distance;
+        public float Gap;
         public float Push;
 
         private void Awake()
@@ -61,6 +61,9 @@ namespace Common
 
         private void LateUpdate()
         {
+            if(_velocity == Vector2.zero)
+                return;
+            
             _velocityDelta = _velocity * Time.deltaTime;
             _handler.ResetHandler();
             _handler.CheckHorizontalCollision(ref _velocityDelta, true);
@@ -107,7 +110,7 @@ namespace Common
             _velocity.x += velocityX;
         }
 
-        public Vector2 PushHorizontally(ref Vector2 deltaVelocity)
+        public Vector2 PushHorizontallyVirtually(ref Vector2 deltaVelocity)
         {
             if (_type == PhysicsType.Static)
                 return Vector2.zero;
