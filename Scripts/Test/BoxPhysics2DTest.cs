@@ -29,7 +29,7 @@ namespace Common.Test
                 
                 _velocity.x = Random.Range(-_randomVelocityRange.x, _randomVelocityRange.x);
                 _velocity.y = Random.Range(-_randomVelocityRange.y, _randomVelocityRange.y);
-                boxPhysics.Move(_velocity);
+                boxPhysics.AddVelocity(_velocity);
 
             }
         }

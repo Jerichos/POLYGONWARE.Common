@@ -5,9 +5,15 @@ using Random = UnityEngine.Random;
 
 namespace Common
 {
-    [RequireComponent(typeof(BoxCollider2D))]
+    public enum PhysicsType
+    {
+        Static,
+        Dynamic,
+    }
+    
     public class BoxPhysics2D : MonoBehaviour
     {
+        [SerializeField] private PhysicsType _type;
         [SerializeField] private LayerMask _collisionLayer;
 
         public Vector2 _lastVelocity;
@@ -20,6 +26,7 @@ namespace Common
         private Vector2 _velocity;
 
         private bool _grounded;
+        private Vector2 _velocityDelta;
 
         public bool Grounded
         {
@@ -33,28 +40,40 @@ namespace Common
             }
         }
 
+        public PhysicsType Type => _type;
+        public int ID => _transform.GetInstanceID();
+
+        public float Distance;
+
         private void Awake()
         {
-            _handler = new BoxCollisionHandler2D(_transform, _collider, _collisionLayer, 0.1f);
+            PhysicsWorld2D.Add(transform.GetInstanceID(), this);
+            
+            if (_type == PhysicsType.Static)
+            {
+                enabled = false;
+                return;
+            }
+            
+            _handler = new BoxCollisionHandler2D(_transform, _collider, _collisionLayer, 1f);
         }
 
         private void LateUpdate()
         {
+            _velocityDelta = _velocity * Time.deltaTime;
             _handler.ResetHandler();
-
-            _handler.CheckHorizontalCollision(ref _velocity, true);
-            _handler.CheckVerticalCollision(ref _velocity, true);
+            _handler.CheckHorizontalCollision(ref _velocityDelta, true);
+            _handler.CheckVerticalCollision(ref _velocityDelta, true);
             
             if(_velocity.x != 0 && _velocity.y != 0)
-                _handler.CheckDiagonalCollision(ref _velocity, true);
-
-            _transform.Translate(_velocity * Time.deltaTime);
-            _lastVelocity = _velocity;
-            Debug.Log("LastVelocity: " + _lastVelocity + " Collisions: " + _handler.Collisions);
+                _handler.CheckDiagonalCollision(ref _velocityDelta, true);
+            
+            Debug.Log(name + " FinalVelocity: " + _velocityDelta);
+            _transform.Translate(_velocityDelta);
             _velocity = Vector2.zero; // Maximum Drag
         }
 
-        public void Move(Vector2 velocity)
+        public void AddVelocity(Vector2 velocity)
         {
             _velocity += velocity;
         }
@@ -65,12 +84,41 @@ namespace Common
             _transform = transform;
         }
 
+        private void OnEnable()
+        {
+            if (_type == PhysicsType.Static)
+                enabled = false;
+        }
+
         private void OnDrawGizmos()
         {
+            if(_type == PhysicsType.Static)
+                return;
+            
             if(Application.isPlaying == false)
                 _handler = new BoxCollisionHandler2D(_transform, _collider, _collisionLayer, 0.1f);
     
             _handler.DrawGizmo();
+        }
+
+        public void AddHorizontalVelocity(float velocityX)
+        {
+            _velocity.x += velocityX;
+        }
+
+        public Vector2 PushHorizontally(ref Vector2 deltaVelocity)
+        {
+            if (_type == PhysicsType.Static)
+                return Vector2.zero;
+            
+            _handler.CheckHorizontalCollision(ref deltaVelocity, true);
+            // _transform.Translate(Vector2.right * deltaVelocity);
+            return deltaVelocity;
+        }
+
+        public void PerformPush(float deltaX)
+        {
+            _transform.Translate(deltaX * Vector2.right);
         }
     }
 }

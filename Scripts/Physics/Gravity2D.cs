@@ -12,7 +12,7 @@ namespace Common
 
         private void Update()
         {
-            _boxPhysics.Move(_gravityForce);
+            _boxPhysics.AddVelocity(_gravityForce);
         }
 
         private void Reset()

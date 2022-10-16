@@ -1,6 +1,4 @@
-﻿using System;
-using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Common
 {
@@ -29,7 +27,7 @@ namespace Common
                 var disableScript = instance.transform.GetComponent<DisableOffScreen>();
                 if (!disableScript)
                 {
-                    disableScript = instance.transform.AddComponent<DisableOffScreen>();
+                    disableScript = instance.gameObject.AddComponent<DisableOffScreen>();
                 }
                 disableScript.Offset = _disableOffset;
             }

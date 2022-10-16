@@ -1,7 +1,4 @@
-﻿using System;
-using Unity.Mathematics;
-using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Common
 {
@@ -24,7 +21,7 @@ namespace Common
             instance.transform.position = transform.position;
 
             if (_killInstanceOffScreen)
-                instance.AddComponent<DisableOffScreen>();
+                instance.gameObject.AddComponent<DisableOffScreen>();
             
             instance.SetActive(true);
         }

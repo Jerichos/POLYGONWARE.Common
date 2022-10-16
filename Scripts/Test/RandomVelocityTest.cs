@@ -15,7 +15,7 @@ namespace Common.Test
             Vector2 velocity;
             velocity.x = Random.Range(-_randomVelocityRange.x, _randomVelocityRange.x);
             velocity.y = Random.Range(-_randomVelocityRange.y, _randomVelocityRange.y);
-            _boxPhysics.Move(velocity);
+            _boxPhysics.AddVelocity(velocity);
         }
     }
 }
