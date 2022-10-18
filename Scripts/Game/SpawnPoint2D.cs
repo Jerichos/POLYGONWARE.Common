@@ -1,6 +1,4 @@
-﻿using System;
-using Contra;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Common
 {
@@ -47,7 +45,8 @@ namespace Common
             if(!player)
                 return;
             
-            if(player.Owner is not PlayerController)
+            // TODO: So any controller can get trigger this?
+            if(player.Owner is not Controller)
                 return;
 
             ETriggered?.Invoke(this);

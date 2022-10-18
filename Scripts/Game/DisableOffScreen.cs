@@ -23,7 +23,7 @@ namespace Common
 
         private void CheckOnScreen()
         {
-            if (!CameraManager2D.Instance.IsOnScreen(transform.position, _offset))
+            if (!PixelCameraManager.Instance.IsOnScreen(transform.position, _offset))
             {
                 gameObject.SetActive(false);
                 

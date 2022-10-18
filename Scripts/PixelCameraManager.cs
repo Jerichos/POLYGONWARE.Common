@@ -3,12 +3,12 @@ using UnityEngine.Experimental.Rendering.Universal;
 
 namespace Common
 {
-    public class CameraManager2D : Singleton<CameraManager2D>
+    public class PixelCameraManager : Singleton<PixelCameraManager>
     {
         protected float _halfWidth;
         protected float _halfHeight;
         
-        private PixelPerfectCamera _pixelPerfectCamera;
+         protected PixelPerfectCamera _pixelPerfectCamera;
 
         protected override void Awake()
         {

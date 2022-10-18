@@ -1,7 +1,4 @@
-﻿using System;
-using TMPro.EditorUtilities;
-using UnityEngine;
-using Random = UnityEngine.Random;
+﻿using UnityEngine;
 
 namespace Common
 {
@@ -62,6 +59,11 @@ namespace Common
         {
             if(_velocity == Vector2.zero)
                 return;
+            
+            //
+            // Resolve all velocities
+            //
+            //
             
             _velocityDelta = _velocity * Time.deltaTime;
             _handler.ResetHandler();

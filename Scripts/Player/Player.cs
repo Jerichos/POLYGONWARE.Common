@@ -1,6 +1,4 @@
-﻿using System;
-using Contra;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Common
 {
