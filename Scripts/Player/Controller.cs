@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common.Player
 {
     public abstract class Controller : MonoBehaviour, IController
     {

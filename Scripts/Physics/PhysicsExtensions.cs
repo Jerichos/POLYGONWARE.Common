@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common.Physics
 {
     public static class PhysicsExtensions
     {

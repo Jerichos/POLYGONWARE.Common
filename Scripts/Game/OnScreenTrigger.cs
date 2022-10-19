@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using POLYGONWARE.Common.Camera;
+using UnityEngine;
 using UnityEngine.Events;
 
-namespace Common
+namespace POLYGONWARE.Common.Game
 {
     public class OnScreenTrigger : MonoBehaviour, IOnScreenTrigger
     {

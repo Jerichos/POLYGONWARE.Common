@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common.Attributes
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class MonoScriptAttribute : PropertyAttribute

@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using POLYGONWARE.Common.Camera;
+using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common.Player
 {
     public abstract class PlayerController : Controller
     {

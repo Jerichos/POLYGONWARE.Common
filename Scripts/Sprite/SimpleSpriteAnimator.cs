@@ -1,11 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common.Sprite
 {
     public class SimpleSpriteAnimator : MonoBehaviour
     {
-        [SerializeField] private Sprite[] _sprites;
+        [SerializeField] private UnityEngine.Sprite[] _sprites;
         [SerializeField] private float _rate = 2;
         [SerializeField] private bool _disableAfterAnimation;
         [SerializeField] private SpriteRenderer _renderer;

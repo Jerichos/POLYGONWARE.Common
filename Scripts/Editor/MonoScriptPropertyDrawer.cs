@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Collections.Generic;
+using POLYGONWARE.Common.Attributes;
+using POLYGONWARE.Common.Player;
 using UnityEditor;
 using UnityEngine;
 
-namespace Common.Editor
+namespace POLYGONWARE.Common.Editor
 {
     [CustomPropertyDrawer(typeof(MonoScriptAttribute), false)]
     public class MonoScriptPropertyDrawer : PropertyDrawer

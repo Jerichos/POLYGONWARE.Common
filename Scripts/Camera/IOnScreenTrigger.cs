@@ -1,4 +1,4 @@
-﻿namespace Common
+﻿namespace POLYGONWARE.Common.Camera
 {
     public interface IOnScreenTrigger
     {

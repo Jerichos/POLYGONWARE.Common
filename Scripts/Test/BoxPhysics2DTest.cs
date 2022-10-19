@@ -1,8 +1,8 @@
-﻿using System;
+﻿using POLYGONWARE.Common.Physics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Common.Test
+namespace POLYGONWARE.Common.Test
 {
     public class BoxPhysics2DTest : MonoBehaviour
     {

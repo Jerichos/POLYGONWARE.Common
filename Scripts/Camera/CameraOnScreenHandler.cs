@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common.Camera
 {
     public class CameraOnScreenHandler : MonoBehaviour
     {
-        [SerializeField] private Camera _camera;
+        [SerializeField] private UnityEngine.Camera _camera;
         [SerializeField] private LayerMask _hitLayer;
         [SerializeField] private Vector2 _sizeOffset = Vector2.one;
         [SerializeField] private BoxCollider2D _collider;

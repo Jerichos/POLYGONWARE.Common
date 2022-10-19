@@ -1,13 +1,14 @@
-﻿using UnityEngine;
+﻿using POLYGONWARE.Common.Player;
+using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common.Game
 {
     [RequireComponent(typeof(BoxCollider2D))]
     public class SpawnPoint2D : MonoBehaviour
     {
         [SerializeField] private bool _active;
-        [SerializeField] private Sprite _inactiveSprite;
-        [SerializeField] private Sprite _activeSprite;
+        [SerializeField] private UnityEngine.Sprite _inactiveSprite;
+        [SerializeField] private UnityEngine.Sprite _activeSprite;
         [SerializeField] private SpriteRenderer _renderer;
 
         public bool Active

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common
 {
     public class Singleton<T> : MonoBehaviour where T: Component
     {

@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common.Camera
 {
     public class PlayerCamera : Singleton<PlayerCamera>
     {
@@ -9,6 +8,9 @@ namespace Common
 
         private void Update()
         {
+            if (!_target)
+                enabled = false;
+            
             var position = _target.position;
             position.z = -10;
             transform.position = position;

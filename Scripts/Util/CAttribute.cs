@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Common
+namespace POLYGONWARE.Common.Util
 {
     public delegate void SAttributeDelegate<in T>(T value);
     

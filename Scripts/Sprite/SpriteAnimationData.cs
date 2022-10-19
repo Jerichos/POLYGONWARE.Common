@@ -1,11 +1,10 @@
 ﻿using System;
-using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common.Sprite
 {
     [Serializable]
     public struct SpriteAnimationData
     {
-        public Sprite[] Sprites;
+        public UnityEngine.Sprite[] Sprites;
     }
 }

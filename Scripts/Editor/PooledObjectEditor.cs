@@ -1,7 +1,8 @@
-﻿using UnityEditor;
+﻿using POLYGONWARE.Common.Pooling;
+using UnityEditor;
 using UnityEngine;
 
-namespace Common.Editor
+namespace POLYGONWARE.Common.Editor
 {
     [CustomEditor(typeof(PooledObject), true)]
     public class PooledObjectEditor : UnityEditor.Editor

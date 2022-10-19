@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common.Pooling
 {
     [DefaultExecutionOrder(-100)]
     public static class DatabaseLoader
@@ -16,8 +15,11 @@ namespace Common
         [RuntimeInitializeOnLoadMethod]
         private static void LoadAllPrefabs()
         {
-            if(!LOAD_PREFAB_DATABASE)
+            if (!LOAD_PREFAB_DATABASE)
+            {
+                Debug.LogWarning("DatabaseLoader is disabled");
                 return;
+            }
             
             var prefabs = Resources.LoadAll<PooledObject>(PREFABS_PATH);
             for (uint i = 0; i < prefabs.Length; i++)

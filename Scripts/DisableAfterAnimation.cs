@@ -1,7 +1,7 @@
-﻿using System;
+﻿using POLYGONWARE.Common.Pooling;
 using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common
 {
     public class DisableAfterAnimation : PooledObject
     {

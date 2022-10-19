@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using POLYGONWARE.Common.Player;
 using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common.Game
 {
     [DefaultExecutionOrder(-10)]
     public class LevelManager : Singleton<LevelManager>
@@ -13,7 +14,7 @@ namespace Common
         
         public BoxCollider2D LevelBounds => _levelBounds;
 
-        public readonly List<Player> Players = new();
+        public readonly List<Player.Player> Players = new();
 
         private SpawnPoint2D[] _spawnPoints;
         
@@ -26,7 +27,7 @@ namespace Common
             StartCoroutine(Freeze(4));
         }
 
-        public void AddPlayer(Player player)
+        public void AddPlayer(Player.Player player)
         {
             Players.Add(player);
             
@@ -50,7 +51,7 @@ namespace Common
             Time.timeScale = 1;
         }
 
-        public void Respawn(Player player)
+        public void Respawn(Player.Player player)
         {
             // Spawn Character For a Player
             var character = Instantiate(_characterPrefab, _spawnPoint.Position, Quaternion.identity);

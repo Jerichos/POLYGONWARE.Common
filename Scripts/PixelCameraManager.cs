@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 
-namespace Common
+namespace POLYGONWARE.Common
 {
     public class PixelCameraManager : Singleton<PixelCameraManager>
     {

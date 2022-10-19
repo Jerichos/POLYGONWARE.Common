@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Common
+namespace POLYGONWARE.Common.Combat
 {
     [Serializable]
     public struct DamageData

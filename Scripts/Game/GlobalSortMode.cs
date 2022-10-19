@@ -1,8 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Common
+namespace POLYGONWARE.Common.Game
 {
     public class GlobalSortMode : Singleton<GlobalSortMode>
     {

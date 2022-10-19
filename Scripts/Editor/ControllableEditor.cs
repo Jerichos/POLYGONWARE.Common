@@ -1,9 +1,10 @@
 ﻿using System;
+using POLYGONWARE.Common.Player;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Common.Editor
+namespace POLYGONWARE.Common.Editor
 {
     [CustomEditor(typeof(Controllable), true)]
     public class ControllableEditor : UnityEditor.Editor

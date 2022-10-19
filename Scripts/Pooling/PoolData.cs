@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Common
+namespace POLYGONWARE.Common.Pooling
 {
     [Serializable]
     public struct PoolData
