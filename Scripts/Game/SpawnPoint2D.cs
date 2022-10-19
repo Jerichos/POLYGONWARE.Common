@@ -46,7 +46,7 @@ namespace Common
                 return;
             
             // TODO: So any controller can get trigger this?
-            if(player.Owner is not Controller)
+            if(player.Controller is not Controller)
                 return;
 
             ETriggered?.Invoke(this);

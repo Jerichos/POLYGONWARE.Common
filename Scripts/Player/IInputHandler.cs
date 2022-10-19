@@ -4,6 +4,5 @@ namespace Common
 {
     public interface IInputHandler : IDisposable
     {
-        void Update();
     }
 }

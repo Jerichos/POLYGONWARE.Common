@@ -5,21 +5,25 @@ namespace Common
 {
     public abstract class Controller : MonoBehaviour, IController
     {
-        [SerializeField] protected Controllable _controllable;
+        [SerializeField] protected Controllable _defaultControllable;
+
+        protected IControllable _controllable;
 
         protected virtual void Awake()
         {
-            if(_controllable)
-                HandleControl(_controllable);
+            if (_defaultControllable)
+            {
+                _controllable = _defaultControllable;
+                TakeControl(_controllable);
+            }
         }
 
-        public void Control(Controllable character)
+        public void Control(IControllable character)
         {
             _controllable = character;
-            HandleControl(character);
+            TakeControl(character);
         }
 
-        protected abstract void HandleControl(Controllable controllable);
-        
+        public abstract void TakeControl(IControllable controllable);
     }
 }

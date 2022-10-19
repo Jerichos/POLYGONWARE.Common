@@ -3,9 +3,12 @@
     "rootNamespace": "",
     "references": [
         "GUID:8b3c26b07ee54c04d98a95530dcb3997",
-        "GUID:8a8aca228f1aabb4bb7e706601325bd1"
+        "GUID:8a8aca228f1aabb4bb7e706601325bd1",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

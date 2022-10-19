@@ -17,11 +17,18 @@ namespace Common
         public void SetTarget(Transform target)
         {
             _target = target;
+            enabled = true;
         }
         
         public bool IsOnScreen(Vector2 position, Vector2 offset)
         {
             return true;
+        }
+
+        private void OnEnable()
+        {
+            if (!_target)
+                enabled = false;
         }
     }
 }
