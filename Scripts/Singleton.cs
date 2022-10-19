@@ -18,6 +18,7 @@ namespace Common
             }
 
             _instance = GetComponent<T>();
+            Debug.Log(name + " Singleton Initialized");
             
             if(_dontDestroyOnLoad)
                 DontDestroyOnLoad(gameObject);
