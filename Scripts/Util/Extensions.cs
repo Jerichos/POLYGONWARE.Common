@@ -4,9 +4,14 @@ namespace POLYGONWARE.Common.Util
 {
     public static class Extensions
     {
-        public static void DebugLog(this Transform transform, string log)
+        public static void Log(this Transform transform, string logMessage)
         {
-            Debug.Log(transform.name + ": " + log);
+            Debug.Log(transform.name + ": " + logMessage, transform);
+        }
+        
+        public static void Log(this GameObject gameObject, string logMessage)
+        {
+            Debug.Log(gameObject.name + ": " + logMessage, gameObject);
         }
     }
 }
