@@ -1,17 +1,18 @@
 ﻿using POLYGONWARE.Common.Camera;
+using POLYGONWARE.Common.Player;
 using UnityEngine;
 
-namespace POLYGONWARE.Common.Player
+namespace POLYGONWARE.Common
 {
     public abstract class PlayerController : Controller
     {
         [SerializeField] protected PlayerCamera _playerCamera;
         
-        public static PlayerController LocalPlayerController;
+        public static PlayerController Local;
         
         protected override void Awake()
         {
-            if (LocalPlayerController)
+            if (Local)
             {
                 //TODO: What if more players play on one machine?
                 Debug.LogWarning("There can be only one local player controller.");
@@ -20,7 +21,7 @@ namespace POLYGONWARE.Common.Player
             }
             
             base.Awake();
-            LocalPlayerController = this;
+            Local = this;
         }
 
         

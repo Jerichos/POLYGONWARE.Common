@@ -1,28 +1,35 @@
-﻿using UnityEngine;
+﻿using POLYGONWARE.Common.Player;
+using POLYGONWARE.Common.Util;
+using UnityEngine;
 
-namespace POLYGONWARE.Common.Player
+namespace POLYGONWARE.Common
 {
     public abstract class Controller : MonoBehaviour, IController
     {
         [SerializeField] protected Controllable _defaultControllable;
 
-        protected IControllable _controllable;
+        private IControllable _controllable;
+        public IControllable Controllable => _controllable;
+
+        public event GenericDelegate<IControllable> EControllableChanged;
 
         protected virtual void Awake()
         {
             if (_defaultControllable)
             {
                 _controllable = _defaultControllable;
-                TakeControl(_controllable);
+                HandleControl(_controllable);
             }
         }
 
         public void Control(IControllable character)
         {
             _controllable = character;
-            TakeControl(character);
+            HandleControl(character);
+            Debug.Log("EControllableChanged");
+            EControllableChanged?.Invoke(_controllable);
         }
 
-        public abstract void TakeControl(IControllable controllable);
+        protected abstract void HandleControl(IControllable controllable);
     }
 }

@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using POLYGONWARE.Common.Physics;
+using UnityEngine;
 
-namespace POLYGONWARE.Common.Physics
+namespace POLYGONWARE.Common
 {
     public class BoxCollisionHandler2D
     {
@@ -33,7 +34,7 @@ namespace POLYGONWARE.Common.Physics
 
         private Transform _transform;
 
-        private Vector2 Center => (Vector2)_transform.position + _transformOffset;
+        public Vector2 Center => (Vector2)_transform.position + _transformOffset;
         
         private BoxPhysics2D[] VerticalHits;
         private BoxPhysics2D[] HorizontalHits;
@@ -61,8 +62,8 @@ namespace POLYGONWARE.Common.Physics
 
             _transformOffset = collider.bounds.center - collider.transform.position;
             
-            _localBottomLeft    = new Vector2(-bounds.extents.x, 0)     + _transformOffset;
-            _localBottomRight   = new Vector2(0, -bounds.extents.y)      + _transformOffset;
+            _localBottomLeft    = new Vector2(-bounds.extents.x, 0) + _transformOffset;
+            _localBottomRight   = new Vector2(0, -bounds.extents.y) + _transformOffset;
             // _localTopLeft       = new Vector2(-bounds.extents.x, 0)      + _transformOffset;
             // _localTopRight      = new Vector2(0, bounds.extents.y)       + _transformOffset;
                 
@@ -352,10 +353,9 @@ namespace POLYGONWARE.Common.Physics
             return collision;
         }
 
-        public void SnapToClosestHit(Vector2 velocity)
+        public RaycastHit2D GetHitFromDirection(Vector2 direction, float length, LayerMask layer)
         {
-            var position = _collider.transform.position;
-            _collider.transform.position = position;
+            return Physics2D.Raycast(Center, direction.normalized, length, layer);
         }
 
         public void ResetHandler()
