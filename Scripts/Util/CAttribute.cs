@@ -55,7 +55,7 @@ namespace POLYGONWARE.Common.Util
     }
 
     [Serializable]
-    public struct SAttribute<T> where T : IComparable
+    public struct SAttribute<T>
     {
         [SerializeField] private T _value;
 
@@ -64,9 +64,6 @@ namespace POLYGONWARE.Common.Util
             get => _value;
             set
             {
-                if(_value.Equals(value))
-                    return;
-
                 _value = value;
                 EChanged?.Invoke(_value);
             }
