@@ -1,4 +1,4 @@
-﻿namespace POLYGONWARE.Common.Player
+﻿namespace POLYGONWARE.Common
 {
     public interface IController
     {

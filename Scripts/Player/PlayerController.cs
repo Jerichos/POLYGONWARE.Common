@@ -1,5 +1,4 @@
 ﻿using POLYGONWARE.Common.Camera;
-using POLYGONWARE.Common.Player;
 using UnityEngine;
 
 namespace POLYGONWARE.Common

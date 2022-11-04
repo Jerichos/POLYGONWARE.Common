@@ -1,7 +1,7 @@
 ﻿using POLYGONWARE.Common.Game;
 using UnityEngine;
 
-namespace POLYGONWARE.Common.Player
+namespace POLYGONWARE.Common
 {
     public class Player : MonoBehaviour
     {

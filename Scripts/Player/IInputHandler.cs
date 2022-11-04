@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace POLYGONWARE.Common.Player
+namespace POLYGONWARE.Common
 {
     public interface IInputHandler : IDisposable
     {

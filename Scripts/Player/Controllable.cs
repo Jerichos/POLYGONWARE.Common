@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace POLYGONWARE.Common.Player
+namespace POLYGONWARE.Common
 {
     public class Controllable : MonoBehaviour, IControllable
     {

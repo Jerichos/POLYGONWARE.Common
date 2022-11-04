@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace POLYGONWARE.Common.Player
+namespace POLYGONWARE.Common
 {
     public interface IControllable
     {
