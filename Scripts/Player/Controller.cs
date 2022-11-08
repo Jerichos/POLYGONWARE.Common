@@ -1,5 +1,4 @@
-﻿using POLYGONWARE.Common.Player;
-using POLYGONWARE.Common.Util;
+﻿using POLYGONWARE.Common.Util;
 using UnityEngine;
 
 namespace POLYGONWARE.Common

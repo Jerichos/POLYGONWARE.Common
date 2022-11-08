@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using POLYGONWARE.Common.Attributes;
-using POLYGONWARE.Common.Player;
 using UnityEditor;
 using UnityEngine;
 
