@@ -4,16 +4,23 @@ namespace POLYGONWARE.Common.UI
 {
     public class TooltipSystem : Singleton<TooltipSystem>
     {
-        [SerializeField] private TooltipUI _tooltip;
+        [SerializeField] private TooltipPanelUI _tooltipPanel;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            _tooltipPanel.Close();
+        }
 
         public void Open(TooltipData data)
         {
-            _tooltip.Open(data);
+            _tooltipPanel.Open(data);
         }
 
         public void Close()
         {
-            _tooltip.Close();
+            _tooltipPanel.Close();
         }
     }
 }

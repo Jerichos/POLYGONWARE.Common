@@ -188,6 +188,48 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Common_GUI_3
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 30, y: 30, z: 30, w: 30}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b461be4812d4ac4eb0a47aa31c3f32d
+      internalID: 2025927208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Common_GUI_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 52, y: 52, z: 52, w: 52}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa22c7236e591ef418b48649a417bdce
+      internalID: 166942602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -201,6 +243,8 @@ TextureImporter:
     nameFileIdTable:
       WhitePixel: 986741466
       Common_GUI_2: 1158651659
+      Common_GUI_3: 2025927208
+      Common_GUI_4: 166942602
       Common_GUI_1: 2104652541
       Common_GUI_0: 2026774730
   spritePackingTag: 

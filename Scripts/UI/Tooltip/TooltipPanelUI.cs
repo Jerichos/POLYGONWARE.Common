@@ -1,10 +1,12 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace POLYGONWARE.Common.UI
 {
-    public class TooltipUI : MonoBehaviour
+    public class TooltipPanelUI : MonoBehaviour
     {
+        [SerializeField] private Image _iconMage;
         [SerializeField] private TMP_Text _titleText;
         [SerializeField] private TMP_Text _descriptionText;
         
@@ -12,11 +14,12 @@ namespace POLYGONWARE.Common.UI
         {
             _titleText.SetText(data.Title);
             _descriptionText.SetText(data.Description);
+            gameObject.SetActive(true);
         }
 
         public void Close()
         {
-            
+            gameObject.SetActive(false);
         }
     }
 }

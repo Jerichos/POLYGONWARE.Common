@@ -1,25 +1,43 @@
+using POLYGONWARE.Common.Util;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace POLYGONWARE.Common.UI
 {
-    public class Tooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class Tooltip : MonoBehaviour, IDeselectHandler
     {
-        private TooltipData _tooltipData;
+        private GetCallback<TooltipData> _getTooltipDataCallback;
 
-        public void SetData(TooltipData data)
+        public void SetupTooltip(GetCallback<TooltipData> callback)
         {
-            _tooltipData = data;
+            _getTooltipDataCallback = callback;
         }
 
-        public void OnPointerEnter(PointerEventData eventData)
+        protected void OpenTooltip()
         {
+            if (_getTooltipDataCallback == null)
+            {
+                Debug.LogError("SetupTooltip was not called.");
+                return;
+            }
+            
+            var _tooltipData = _getTooltipDataCallback.Invoke();
             TooltipSystem.Instance.Open(_tooltipData);
+            EventSystem.current.SetSelectedGameObject(gameObject);
+            
+            Debug.Log("OpenTooltip");
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        protected void CloseTooltip()
         {
             TooltipSystem.Instance.Close();
+            Debug.Log("CloseTooltip");
+        }
+
+        public void OnDeselect(BaseEventData eventData)
+        {
+            Debug.Log("OnDeselect");
+            CloseTooltip();
         }
     }
 }
