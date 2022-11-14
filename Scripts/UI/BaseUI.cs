@@ -23,6 +23,7 @@ namespace POLYGONWARE.Common.UI
         public virtual IUI Close()
         {
             // gameObject.Log("Close");
+            OnClose();
             gameObject.SetActive(false);
             return this;
         }
@@ -34,5 +35,7 @@ namespace POLYGONWARE.Common.UI
             gameObject.SetActive(open);
             return this;
         }
+
+        protected virtual void OnClose() { }
     }
 }

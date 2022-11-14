@@ -70,5 +70,10 @@ namespace POLYGONWARE.Common.Util
         }
 
         public event GenericDelegate<T> EChanged;
+
+        public void InvokeChangeEvent()
+        {
+            EChanged?.Invoke(_value);
+        }
     }
 }

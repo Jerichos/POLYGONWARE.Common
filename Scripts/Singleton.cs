@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace POLYGONWARE.Common
 {
@@ -7,7 +8,19 @@ namespace POLYGONWARE.Common
         [SerializeField] private bool _dontDestroyOnLoad;
         
         private static T _instance;
-        public static T Instance => _instance;
+
+        public static T Instance
+        {
+            get
+            {
+                if (!_instance)
+                {
+                    throw new Exception("Singleton was not initialized!");
+                }
+                
+                return _instance;
+            }
+        }
 
         protected virtual void Awake()
         {

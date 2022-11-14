@@ -33,7 +33,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 0
@@ -95,6 +95,18 @@ TextureImporter:
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -218,7 +230,7 @@ TextureImporter:
         width: 128
         height: 128
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 52, y: 52, z: 52, w: 52}
       outline: []
       physicsShape: []
@@ -226,6 +238,153 @@ TextureImporter:
       bones: []
       spriteID: fa22c7236e591ef418b48649a417bdce
       internalID: 166942602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Common_GUI_5
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 776
+        width: 240
+        height: 240
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 40, y: 40, z: 40, w: 40}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52448d430f000af459d2647c95de9302
+      internalID: 1045122801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Common_GUI_6
+      rect:
+        serializedVersion: 2
+        x: 776
+        y: 776
+        width: 240
+        height: 240
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 40, y: 40, z: 40, w: 40}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8ce7d2a9bc7251a4da43de515a99e070
+      internalID: -60133625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Common_GUI_7
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 520
+        width: 240
+        height: 240
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 20, y: 20, z: 20, w: 20}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab876e6a1aa7ac44992bfd8f314dfe37
+      internalID: 1983140037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Common_GUI_8
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 512
+        width: 240
+        height: 240
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e33147e26b013234aa5b1e519dd58300
+      internalID: 163634027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Common_GUI_9
+      rect:
+        serializedVersion: 2
+        x: 776
+        y: 520
+        width: 240
+        height: 240
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 94, y: 94, z: 94, w: 94}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 193cf1ad2ddfa5a4898a3e4568057c47
+      internalID: -772485095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Common_GUI_10
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 797
+        width: 81
+        height: 62
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8421fb378c4c2f346839449beb5dfdd6
+      internalID: 1828024720
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Common_GUI_11
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 645
+        width: 118
+        height: 118
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 062eea871410eac48b72b7998a67dd70
+      internalID: -1491564231
       vertices: []
       indices: 
       edges: []
@@ -241,11 +400,18 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      Common_GUI_11: -1491564231
+      Common_GUI_7: 1983140037
+      Common_GUI_9: -772485095
       WhitePixel: 986741466
+      Common_GUI_6: -60133625
+      Common_GUI_5: 1045122801
       Common_GUI_2: 1158651659
       Common_GUI_3: 2025927208
       Common_GUI_4: 166942602
       Common_GUI_1: 2104652541
+      Common_GUI_8: 163634027
+      Common_GUI_10: 1828024720
       Common_GUI_0: 2026774730
   spritePackingTag: 
   pSDRemoveMatte: 0
