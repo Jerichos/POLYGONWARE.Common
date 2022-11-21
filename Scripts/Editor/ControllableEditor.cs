@@ -13,7 +13,7 @@ namespace POLYGONWARE.Common.Editor
         [NonSerialized] private GUIContent[] m_ActionMapOptions;
         [NonSerialized] private readonly GUIContent m_DefaultActionMapText = EditorGUIUtility.TrTextContent("Default Map", "Action map to enable by default. If not set, no actions will be enabled by default.");
         [NonSerialized] private int m_SelectedDefaultActionMap;
-        [NonSerialized] private GUIContent[] m_ActionNames;
+        // [NonSerialized] private GUIContent[] m_ActionNames;
         [NonSerialized] private GUIContent[] m_ActionMapNames;
         [NonSerialized] private int m_SelectedDefaultControlScheme;
         [NonSerialized] private GUIContent[] m_ControlSchemeOptions;
@@ -31,11 +31,11 @@ namespace POLYGONWARE.Common.Editor
             // Action config section.
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(m_ActionsProperty);
-            var actionsWereChanged = false;
+            // var actionsWereChanged = false;
             if (EditorGUI.EndChangeCheck() || !m_ActionAssetInitialized)
             {
                 OnActionAssetChange();
-                actionsWereChanged = true;
+                // actionsWereChanged = true;
             }
             
             ++EditorGUI.indentLevel;
@@ -87,7 +87,7 @@ namespace POLYGONWARE.Common.Editor
             {
                 m_ControlSchemeOptions = null;
                 m_ActionMapOptions = null;
-                m_ActionNames = null;
+                // m_ActionNames = null;
                 m_SelectedDefaultActionMap = -1;
                 m_SelectedDefaultControlScheme = -1;
                 return;
