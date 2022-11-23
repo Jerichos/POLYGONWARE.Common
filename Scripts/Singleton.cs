@@ -36,5 +36,11 @@ namespace POLYGONWARE.Common
             if(_dontDestroyOnLoad)
                 DontDestroyOnLoad(gameObject);
         }
+        
+        protected void OnDestroy()
+        {
+            if (_instance == this)
+                _instance = null;
+        }
     }
 }

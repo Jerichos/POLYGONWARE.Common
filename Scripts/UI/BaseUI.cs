@@ -6,6 +6,20 @@ namespace POLYGONWARE.Common.UI
 {
     public abstract class BaseUI : MonoBehaviour, IUI
     {
+        private void Awake()
+        {
+            if (enabled)
+            {
+                Invoke(nameof(EnableDelayed), 0.01f);
+                enabled = false;
+            }
+        }
+
+        private void EnableDelayed()
+        {
+            enabled = true;
+        }
+
         public virtual IUI Open()
         {
             // gameObject.Log("Open");
