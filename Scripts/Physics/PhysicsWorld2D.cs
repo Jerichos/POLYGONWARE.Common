@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using POLYGONWARE.Common.Physics;
 using UnityEngine;
 
-namespace POLYGONWARE.Common.Physics
+namespace POLYGONWARE.Common
 {
     public static class PhysicsWorld2D
     {
