@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace POLYGONWARE.Common
 {
@@ -17,5 +18,7 @@ namespace POLYGONWARE.Common
         {
             transform.Translate(y * Vector3.up * _verticalSpeed * Time.deltaTime);
         }
+
+        public override Type InputHandlerType => typeof(FlyingHeadController);
     }
 }

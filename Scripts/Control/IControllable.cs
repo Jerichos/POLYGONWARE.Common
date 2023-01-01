@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace POLYGONWARE.Common
 {
@@ -7,5 +8,6 @@ namespace POLYGONWARE.Common
         Transform Transform { get; }
         public IController Controller { get; }
         void TakeControl(IController owner);
+        Type InputHandlerType { get; }
     }
 }

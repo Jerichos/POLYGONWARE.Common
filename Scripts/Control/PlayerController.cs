@@ -1,16 +1,23 @@
-﻿using POLYGONWARE.Common.Camera;
+﻿using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace POLYGONWARE.Common
 {
-    public abstract class PlayerController : Controller
+    public class PlayerController : Controller
     {
         [SerializeField] protected PlayerCamera _playerCamera;
+
+        private PlayerControls _playerControls;
         
         public static PlayerController Local;
         
+        private IInputHandler _inputHandler;
+        
         protected override void Awake()
         {
+            _playerControls = new PlayerControls();
+            
             if (Local)
             {
                 //TODO: What if more players play on one machine?
@@ -23,6 +30,10 @@ namespace POLYGONWARE.Common
             Local = this;
         }
 
-        
+        protected override void HandleControl(IControllable controllable)
+        {
+            controllable.TakeControl(this);
+            _inputHandler = (IInputHandler)Activator.CreateInstance(controllable.InputHandlerType, _playerControls, controllable);
+        }
     }
 }

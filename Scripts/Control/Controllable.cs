@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace POLYGONWARE.Common
 {
-    public class Controllable : MonoBehaviour, IControllable
+    public abstract class Controllable : MonoBehaviour, IControllable
     {
         [SerializeField][HideInInspector] private InputActionAsset _actionAsset;
         [SerializeField][HideInInspector] private string _actionMap;
@@ -14,8 +15,11 @@ namespace POLYGONWARE.Common
 
         public virtual void TakeControl(IController owner)
         {
+            Debug.Log(name + " TakeControl ");
             Controller = owner;
         }
+
+        public abstract Type InputHandlerType { get; }
 
 #if UNITY_EDITOR
         [SerializeField] public string ActionMap

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace POLYGONWARE.Common.Camera
+namespace POLYGONWARE.Common
 {
     public class PlayerCamera : Singleton<PlayerCamera>
     {

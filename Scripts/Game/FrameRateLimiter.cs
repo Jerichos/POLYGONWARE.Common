@@ -7,8 +7,8 @@ namespace POLYGONWARE.Common
         [RuntimeInitializeOnLoadMethod]
         public static void LimitFrameRate()
         {
-            Application.targetFrameRate = 30;
-            Debug.Log("FrameRate limited to " + 30);
+            Application.targetFrameRate = 144;
+            Debug.Log("FrameRate limited to " + Application.targetFrameRate);
         }
     }
 }
