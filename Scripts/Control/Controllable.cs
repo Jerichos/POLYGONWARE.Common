@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,7 +20,9 @@ namespace POLYGONWARE.Common
             Controller = owner;
         }
 
-        public abstract Type InputHandlerType { get; }
+        public virtual Type InputHandlerType => typeof(Controllable);
+        
+        //public abstract Type InputHandlerType { get; }
 
 #if UNITY_EDITOR
         [SerializeField] public string ActionMap

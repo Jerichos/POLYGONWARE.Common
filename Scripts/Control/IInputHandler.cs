@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine.InputSystem;
 
 namespace POLYGONWARE.Common
 {
