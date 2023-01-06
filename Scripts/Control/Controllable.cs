@@ -20,7 +20,7 @@ namespace POLYGONWARE.Common
             Controller = owner;
         }
 
-        public virtual Type InputHandlerType => typeof(Controllable);
+        public abstract Type InputHandlerType { get; }
         
         //public abstract Type InputHandlerType { get; }
 

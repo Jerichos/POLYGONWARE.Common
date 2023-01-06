@@ -6,18 +6,15 @@ namespace POLYGONWARE.Common
 {
     public class PlayerController : Controller
     {
+        [SerializeField] private InputActionAsset _inputAsset;
         [SerializeField] protected PlayerCamera _playerCamera;
 
-        private PlayerControls _playerControls;
-        
         public static PlayerController Local;
         
         private IInputHandler _inputHandler;
         
         protected override void Awake()
         {
-            _playerControls = new PlayerControls();
-            
             if (Local)
             {
                 //TODO: What if more players play on one machine?
@@ -33,7 +30,11 @@ namespace POLYGONWARE.Common
         protected override void HandleControl(IControllable controllable)
         {
             controllable.TakeControl(this);
-            _inputHandler = (IInputHandler)Activator.CreateInstance(controllable.InputHandlerType, _playerControls, controllable);
+            Debug.Log("type " + controllable.InputHandlerType);
+            _inputHandler = (IInputHandler)Activator.CreateInstance(controllable.InputHandlerType, _inputAsset, controllable);
+            
+            if(_playerCamera)
+                _playerCamera.SetTarget(controllable.Transform);
         }
     }
 }

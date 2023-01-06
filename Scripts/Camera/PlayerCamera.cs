@@ -2,19 +2,19 @@
 
 namespace POLYGONWARE.Common
 {
-    public class PlayerCamera : Singleton<PlayerCamera>
+    public abstract class PlayerCamera : Singleton<PlayerCamera>
     {
-        private Transform _target;
+        [SerializeField] protected Transform _target;
 
         private void Update()
         {
             if (!_target)
                 enabled = false;
             
-            var position = _target.position;
-            position.z = -10;
-            transform.position = position;
+            FollowTarget();
         }
+
+        protected abstract void FollowTarget();
 
         public void SetTarget(Transform target)
         {
@@ -30,7 +30,10 @@ namespace POLYGONWARE.Common
         private void OnEnable()
         {
             if (!_target)
+            {
+                Debug.LogWarning("PlayerCamera has no target... disabling.");
                 enabled = false;
+            }
         }
     }
 }

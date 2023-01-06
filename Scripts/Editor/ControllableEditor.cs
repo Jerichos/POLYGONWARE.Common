@@ -22,6 +22,7 @@ namespace POLYGONWARE.Common.Editor
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+            return;
             
             EditorGUILayout.Space(10);
             EditorGUILayout.LabelField("Controllable", EditorStyles.boldLabel);

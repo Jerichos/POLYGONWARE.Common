@@ -15,6 +15,7 @@ namespace POLYGONWARE.Common.Physics
         public static BoxPhysics2D Add(this BoxPhysics2D[] hits, int instanceID)
         {
             // int freeID = -1;
+            return null;
             
             for (int i = 0; i < hits.Length; i++)
             {
