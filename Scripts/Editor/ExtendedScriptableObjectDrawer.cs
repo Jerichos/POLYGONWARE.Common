@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using SystemPath = System.IO.Path;
 
 namespace POLYGONWARE.Common.Editor
 {
@@ -139,7 +140,7 @@ namespace POLYGONWARE.Common.Editor
                     if (property.serializedObject.targetObject is MonoBehaviour)
                     {
                         var ms = MonoScript.FromMonoBehaviour((MonoBehaviour) property.serializedObject.targetObject);
-                        selectedAssetPath = Path.GetDirectoryName(AssetDatabase.GetAssetPath(ms));
+                        selectedAssetPath = SystemPath.GetDirectoryName(AssetDatabase.GetAssetPath(ms));
                     }
 
                     property.objectReferenceValue = CreateAssetWithSavePrompt(type, selectedAssetPath);

@@ -65,10 +65,10 @@ namespace POLYGONWARE.Common
             _collider = collider;
             _transform = transform;
             
-            Update(maxRayGap, skin);
+            UpdateCollider(maxRayGap, skin);
         }
         
-        public void Update(float maxRayGap = 0.1f, float skin = 0.01f)
+        public void UpdateCollider(float maxRayGap = 0.1f, float skin = 0.01f)
         {
             var bounds = _collider.bounds;
             bounds.Expand(skin * -2);
