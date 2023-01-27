@@ -10,6 +10,28 @@ namespace POLYGONWARE.Common.UI
 
         [SerializeField] private float _unitySizeX = 1;
         [SerializeField] private float _unitySizeY = 0.5f;
+
+        [SerializeField] private bool _invertX = false;
+
+        public bool InvertX
+        {
+            set
+            {
+                _invertX = value;
+                var scale = transform.localScale;
+                if (_invertX)
+                {
+                    scale.x = Mathf.Abs(scale.x) * -1;
+                }
+                else
+                {
+                    scale.x = Mathf.Abs(scale.x);
+                }
+
+                transform.localScale = scale;
+            }
+        }
+        
         private void OnValidate()
         {
             Canvas _canvas = GetComponent<Canvas>();
@@ -27,6 +49,8 @@ namespace POLYGONWARE.Common.UI
             rect.sizeDelta = new Vector2(width, height);
 
             _canvas.transform.localScale = scale;
+
+            InvertX = _invertX;
         }
     }
 }

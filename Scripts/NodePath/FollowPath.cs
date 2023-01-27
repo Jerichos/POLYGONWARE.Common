@@ -1,4 +1,5 @@
 ﻿using System;
+using POLYGONWARE.Common.Util;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -14,6 +15,18 @@ namespace POLYGONWARE.Common
 
         private IFollowPath _followPath;
 
+        private GenericDelegate<GameObject> _pathEndedCallback;
+        
+        public void NotifyPathEnded(GenericDelegate<GameObject> callback)
+        {
+            _pathEndedCallback = callback;
+        }
+
+        public PathManager Path
+        {
+            set => _pathManager = value;
+        }
+        
         private void Start()
         {
             transform.position = _pathManager.Path.Nodes[_currentPoint].Vector3;
@@ -38,6 +51,8 @@ namespace POLYGONWARE.Common
                 
                 if (_followPath.IsEndOfPath())
                 {
+                    _pathEndedCallback?.Invoke(gameObject);
+                    
                     if (_loop)
                         _followPath = _followPath.GetNextFollowPath();
                     else

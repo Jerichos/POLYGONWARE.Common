@@ -19,7 +19,6 @@ namespace POLYGONWARE.Common.UI
             {
                 float percentage = (float)decimal.Round((decimal)(value * 100), 0);
                 percentage = Mathf.Ceil(percentage);
-                Debug.Log("Percentage: " + percentage + " value: " + value);
                 _text.SetText(percentage.ToString(CultureInfo.InvariantCulture) + "%");
             }
             else
