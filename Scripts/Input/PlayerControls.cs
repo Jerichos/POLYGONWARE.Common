@@ -119,7 +119,7 @@ namespace POLYGONWARE
 }");
             // Character
             m_Character = asset.FindActionMap("Character", throwIfNotFound: true);
-            m_Character_Movement = m_Character.FindAction("Move", throwIfNotFound: true);
+            m_Character_Movement = m_Character.FindAction("Movement", throwIfNotFound: true);
         }
 
         public void Dispose()

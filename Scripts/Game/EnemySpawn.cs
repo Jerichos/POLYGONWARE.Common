@@ -1,4 +1,5 @@
-﻿using POLYGONWARE.Common.Pooling;
+﻿#if URP
+using POLYGONWARE.Common.Pooling;
 using UnityEngine;
 
 namespace POLYGONWARE.Common.Game
@@ -71,3 +72,4 @@ namespace POLYGONWARE.Common.Game
 #endif
     }
 }
+#endif

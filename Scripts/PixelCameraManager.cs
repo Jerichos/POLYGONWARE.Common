@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if URP
+using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 
 namespace POLYGONWARE.Common
@@ -38,3 +39,4 @@ namespace POLYGONWARE.Common
         }
     }
 }
+#endif
