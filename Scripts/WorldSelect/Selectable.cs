@@ -1,28 +1,50 @@
 ﻿using POLYGONWARE.Common.Util;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace POLYGONWARE.Common
 {
     public class Selectable : MonoBehaviour, ISelectable
     {
+        [SerializeField] protected bool _isSelected;
+
+        public static event GenericDelegate<ISelectable> ESelected; 
+
+        protected bool IsSelected
+        {
+            set
+            {
+                _isSelected = value;
+                
+                if(_isSelected)
+                    OnSelect();
+                else
+                    OnDeselect();
+            }
+        }
+        
         public static ISelectable Selected;
         
-        public event VoidDelegate ESelected;
-        public event VoidDelegate EDeselected;
-
         private bool _hovering;
         
-        public virtual void OnPointerClick(PointerEventData eventData)
+      
+        public virtual void OnSelect()
         {
-            Select();
+            
+        }
+
+        public virtual void OnDeselect()
+        {
+            
         }
 
         public virtual void Select()
         {
             Selected?.Deselect();
-            ESelected?.Invoke();
             Selected = this;
+            IsSelected = true;
+            ESelected?.Invoke(Selected);
         }
 
         public virtual void Deselect()
@@ -31,15 +53,21 @@ namespace POLYGONWARE.Common
                 return;
 
             Selected = null;
-            EDeselected?.Invoke();
+            IsSelected = false;
+            ESelected?.Invoke(Selected);
+        }
+        
+        public virtual void OnPointerClick(PointerEventData eventData)
+        {
+            Select();
         }
 
-        public void OnPointerEnter(PointerEventData eventData)
+        public virtual void OnPointerEnter(PointerEventData eventData)
         {
             _hovering = true;
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        public virtual void OnPointerExit(PointerEventData eventData)
         {
             _hovering = false;
         }

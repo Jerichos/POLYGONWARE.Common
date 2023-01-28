@@ -29,7 +29,7 @@ namespace POLYGONWARE.Common
             if(Path.Nodes.Count <= 1)
                 Debug.LogWarning("Path must have at least 2 nodes. " + Path.Nodes.Count);
             
-            
+            Refresh();
         }
         
 #if UNITY_EDITOR

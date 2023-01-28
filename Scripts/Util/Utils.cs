@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using POLYGONWARE.Common.Util;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace POLYGONWARE.Common
 {
@@ -80,6 +81,11 @@ namespace POLYGONWARE.Common
             // In the string being returned `[` represents inclusive and `)` represents exclusive. So a range of
             // [40, 50) includes numbers from 40.0 to 49.99999 etc.
             return $"[{bottomRange}, {topRange}) seconds";
+        }
+
+        public static bool IsPointerOverUI()
+        {
+            return EventSystem.current.currentSelectedGameObject;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace POLYGONWARE.Common
@@ -11,13 +12,13 @@ namespace POLYGONWARE.Common
 
         private void Update()
         {
+            if(Utils.IsPointerOverUI())
+                return;
+            
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                Debug.Log("1 select");
-
                 if (Selectable.Selected != null)
                 {
-                    Debug.Log("2 selected");
                     Selectable.Selected.Deselect();
                 }
             }
