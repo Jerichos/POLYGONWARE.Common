@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace POLYGONWARE.Common.Util
+namespace POLYGONWARE.Common
 {
     public static class Extensions
     {
