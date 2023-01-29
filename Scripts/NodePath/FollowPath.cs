@@ -15,12 +15,7 @@ namespace POLYGONWARE.Common
 
         private IFollowPath _followPath;
 
-        private GenericDelegate<GameObject> _pathEndedCallback;
-        
-        public void NotifyPathEnded(GenericDelegate<GameObject> callback)
-        {
-            _pathEndedCallback = callback;
-        }
+        public event GenericDelegate<GameObject> EPathEnded; 
 
         public PathManager Path
         {
@@ -51,7 +46,7 @@ namespace POLYGONWARE.Common
                 
                 if (_followPath.IsEndOfPath())
                 {
-                    _pathEndedCallback?.Invoke(gameObject);
+                    EPathEnded?.Invoke(gameObject);
                     
                     if (_loop)
                         _followPath = _followPath.GetNextFollowPath();
