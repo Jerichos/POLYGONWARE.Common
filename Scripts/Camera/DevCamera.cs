@@ -54,7 +54,6 @@ namespace POLYGONWARE.Common.Camera
                 var rotation = transform.eulerAngles;
                 rotation.z = 0;
                 transform.eulerAngles = rotation;
-                Debug.Log("MouseDelta " + mouseDelta + " deltaRotation: " + deltaRotation);
             }
             
             var deltaPosition = _moveDirection.normalized * (_speed * Time.deltaTime);
