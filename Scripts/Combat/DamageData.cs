@@ -6,8 +6,8 @@ namespace POLYGONWARE.Common.Combat
     [Serializable]
     public struct DamageData
     {
-        public GameObject Source;
-        public GameObject Target;
+        public Component Source;
+        public Component Target;
         public float Damage;
     }
 }
