@@ -21,6 +21,12 @@ namespace POLYGONWARE.Common
         {
             set => _pathManager = value;
         }
+
+        public float Speed
+        {
+            get => _speed;
+            set => _speed = value;
+        }
         
         private void Start()
         {

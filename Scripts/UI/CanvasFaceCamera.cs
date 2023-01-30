@@ -5,28 +5,27 @@ namespace POLYGONWARE.Common.UI
 {
     public class CanvasFaceCamera : MonoBehaviour
     {
-        private UnityEngine.Camera _camera;
+        private Transform _cameraTransform;
 
         private void Start()
         {
-            _camera = UnityEngine.Camera.main;
+            _cameraTransform = UnityEngine.Camera.main.transform;
         }
 
         private void Update()
         {
             AlignWithCamera();
-            //transform.rotation = Quaternion.LookRotation((_camera.transform.position - transform.position).normalized);
         }
 
         private void AlignWithCamera()
         {
-            transform.rotation = _camera.transform.rotation;
+            transform.rotation = _cameraTransform.transform.rotation;
         }
 
         private void OnValidate()
         {
-            if(!_camera)
-                _camera= UnityEngine.Camera.main;
+            if(!_cameraTransform)
+                _cameraTransform= GameObject.FindWithTag("MainCamera").transform;
             
             AlignWithCamera();
         }
