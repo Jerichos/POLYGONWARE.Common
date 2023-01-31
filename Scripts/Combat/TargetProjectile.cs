@@ -31,12 +31,11 @@ public class TargetProjectile : PooledObject
 
     private void OnProjectileHit()
     {
+        Debug.Log("1 deactivate me");
         if (_targetTransform && _damageData.Target is IHittable hittable)
         {
             hittable.Hit(_damageData);
         }
-        
-        enabled = false;
         
         if(_model)
             _model.SetActive(false);
@@ -46,20 +45,28 @@ public class TargetProjectile : PooledObject
         else
             DeactivateMe();
 
+        enabled = false;
         // Debug.Log("OnProjectileHit");
     }
 
     private void DeactivateMe()
     {
+        Debug.Log("2 deactivate me");
         gameObject.SetActive(false);
         PoolSystem.ReturnInstance(this);
     }
 
     public void Fire(DamageData damageData)
     {
+        if (!damageData.Target)
+        {
+            DeactivateMe();
+            return;
+        }
+        
         _targetTransform = damageData.Target.transform;
         _damageData = damageData;
-        gameObject.SetActive(true);
+        enabled = true;
     }
     
     public void Fire(DamageData damageData, float speed)
