@@ -11,43 +11,43 @@ namespace POLYGONWARE.Common
 
         private void OnDrawGizmos()
         {
-            if(Path.Nodes.Count <= 1)
+            if(Path.Nodes.Length <= 1)
                 return;
 
-            Gizmos.DrawIcon(Path.FirstNode.Vector3, "Light", false);
-            Gizmos.DrawIcon(Path.LastNode.Vector3, "Light", false);
+            Gizmos.DrawIcon(Path.FirstNode, "Light", false);
+            Gizmos.DrawIcon(Path.LastNode, "Light", false);
 
             Gizmos.color = Color.red;
             for (int i = 1; i < Path.Nodes.Count(); i++)
             {
-                Gizmos.DrawLine(Path.Nodes[i-1].Vector3, Path.Nodes[i].Vector3);
+                Gizmos.DrawLine(Path.Nodes[i-1], Path.Nodes[i]);
             }
         }
 
         private void OnValidate()
         {
-            if(Path.Nodes.Count <= 1)
-                Debug.LogWarning("Path must have at least 2 nodes. " + Path.Nodes.Count);
+            if(Path.Nodes.Length <= 1)
+                Debug.LogWarning("Path must have at least 2 nodes. " + Path.Nodes.Length);
             
+            #if UNITY_EDITOR
             Refresh();
+            #endif
         }
         
 #if UNITY_EDITOR
         public void Refresh()
         {
-            Path.Clear();
-            var childTransforms = new List<Transform>();
+            Path.Nodes = new Vector3[transform.childCount];
 
             for (int i = 0; i < transform.childCount; i++)
             {
-                childTransforms.Add(transform.GetChild(i));
-                Path.Add(transform.GetChild(i).position);
+                Path.Nodes[i] = transform.GetChild(i).position;
             }
         }
 #endif
         public bool EndOfPath(int nextPoint)
         {
-            if (nextPoint >= Path.Nodes.Count)
+            if (nextPoint >= Path.Nodes.Length)
                 return true;
 
             return false;
@@ -58,7 +58,7 @@ namespace POLYGONWARE.Common
     {
         public static Vector3 GetPosition(this PathManager pathManager, int node)
         {
-            return pathManager.Path.Nodes[node].Vector3;
+            return pathManager.Path.Nodes[node];
         }
     }
 }

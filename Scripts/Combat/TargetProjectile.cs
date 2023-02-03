@@ -7,13 +7,17 @@ namespace POLYGONWARE.Common
 {
 public class TargetProjectile : PooledObject
 {
+    [SerializeField] private float _damage = 5;
     [SerializeField] private float _speed = 2;
     [SerializeField] private Transform _targetTransform;
     [SerializeField] private GameObject _model;
-    [SerializeField] private TrailRenderer _trail; // TODO: move to subclass specific for trail
+    //[SerializeField] private TrailRenderer _trail; // TODO: move to subclass specific for trail
 
     private DamageData _damageData;
     private Vector3 _targetPosition;
+
+    public float Speed => _speed;
+    public float Damage => _damage;
 
     private void Update()
     {
@@ -40,10 +44,10 @@ public class TargetProjectile : PooledObject
         if(_model)
             _model.SetActive(false);
         
-        if(_trail)
-            Invoke(nameof(DeactivateMe), _trail.time);
-        else
-            DeactivateMe();
+        // if(_trail)
+        //     Invoke(nameof(DeactivateMe), _trail.time);
+        // else
+        //     DeactivateMe();
 
         enabled = false;
         // Debug.Log("OnProjectileHit");

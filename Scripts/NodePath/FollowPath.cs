@@ -1,5 +1,4 @@
-﻿using System;
-using POLYGONWARE.Common.Util;
+﻿using POLYGONWARE.Common.Util;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -30,12 +29,12 @@ namespace POLYGONWARE.Common
         
         private void Start()
         {
-            transform.position = _pathManager.Path.Nodes[_currentPoint].Vector3;
+            transform.position = _pathManager.Path.Nodes[_currentPoint];
 
             if (_forward)
-                _followPath = new ForwardFollow(_currentPoint, _pathManager.Path.Nodes.Count);
+                _followPath = new ForwardFollow(_currentPoint, _pathManager.Path.Nodes.Length);
             else
-                _followPath = new BackwardFollow(_currentPoint, _pathManager.Path.Nodes.Count);
+                _followPath = new BackwardFollow(_currentPoint, _pathManager.Path.Nodes.Length);
         }
 
         private void Update()
@@ -52,6 +51,7 @@ namespace POLYGONWARE.Common
                 
                 if (_followPath.IsEndOfPath())
                 {
+                    OnPathEnded();
                     EPathEnded?.Invoke(gameObject);
                     
                     if (_loop)
@@ -61,6 +61,13 @@ namespace POLYGONWARE.Common
                 }
             }
         }
+
+        protected virtual void OnPathEnded()
+        {
+            
+        }
+        
+    
     }
 
     public interface IFollowPath

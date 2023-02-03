@@ -7,20 +7,10 @@ namespace POLYGONWARE.Common
     [Serializable]
     public struct Path
     {
-        public List<Node> Nodes;
+        public Vector3[] Nodes;
 
-        public Node FirstNode => Nodes[0];
-        public Node LastNode => Nodes[^1];
-
-        public void Clear()
-        {
-            Nodes.Clear();
-        }
-
-        public void Add(Vector3 position)
-        {
-            Nodes.Add(new Node(position));
-        }
+        public Vector3 FirstNode => Nodes[0];
+        public Vector3 LastNode => Nodes[^1];
 
     }
     
@@ -28,7 +18,7 @@ namespace POLYGONWARE.Common
     {
         public static Vector3 GetPosition(this Path path, int node)
         {
-            return path.Nodes[node].Vector3;
+            return path.Nodes[node];
         }
     }
 }

@@ -22,12 +22,13 @@ namespace POLYGONWARE.Common.UI
             transform.rotation = _cameraTransform.transform.rotation;
         }
 
-        private void OnValidate()
-        {
-            if(!_cameraTransform)
-                _cameraTransform= GameObject.FindWithTag("MainCamera").transform;
-            
-            AlignWithCamera();
-        }
+        // private void OnValidate()
+        // {
+        //     
+        //     if(!_cameraTransform)
+        //         _cameraTransform= GameObject.FindWithTag("MainCamera").transform;
+        //     
+        //     AlignWithCamera();
+        // }
     }
 }
