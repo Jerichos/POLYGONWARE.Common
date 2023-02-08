@@ -5,7 +5,8 @@ namespace POLYGONWARE.Common
 {
     public interface ISelectable : IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        static event GenericDelegate<ISelectable> ESelected; 
+        //static event GenericDelegate<ISelectable> ESelected;
+        //event GenericDelegate<ISelectable> ESelected; 
         void Select();
         void Deselect();
         void OnSelect();

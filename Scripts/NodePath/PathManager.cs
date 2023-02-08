@@ -34,6 +34,8 @@ namespace POLYGONWARE.Common
             #endif
         }
         
+        
+        
 #if UNITY_EDITOR
         public void Refresh()
         {
