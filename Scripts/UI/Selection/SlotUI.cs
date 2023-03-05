@@ -7,14 +7,19 @@ namespace POLYGONWARE.Common.UI
 public class SlotUI<T> : UnityEngine.UI.Selectable
 {
     // TODO: this part has to be figured out...
-    [SerializeField] private SlotSelectionUI<T> _selectionGroupParent;
-    
-    public event GenericDelegate<T> ESelected;
+    [SerializeField] protected SlotSelectionUI<T> _selectionGroupParent;
 
+    private T _value;
+    
     public override void OnSelect(BaseEventData eventData)
     {
         base.OnSelect(eventData);
-        _selectionGroupParent.SetSelected(this);
+        _selectionGroupParent.SetSelected(_value);
+    }
+
+    public virtual void SetData(T value)
+    {
+        _value = value;
     }
 }
 }

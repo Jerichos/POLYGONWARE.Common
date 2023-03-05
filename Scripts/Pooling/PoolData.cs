@@ -108,8 +108,9 @@ public struct ObjectPool<T> where T: Component
     {
         if (Instances.Count == 0)
         {
-            Debug.LogWarning("enqueing new instance");
-            EnqueueInstance();
+            return null;
+            // Debug.LogWarning("enqueing new instance");
+            // EnqueueInstance();
         }
             
         return Instances.Dequeue();

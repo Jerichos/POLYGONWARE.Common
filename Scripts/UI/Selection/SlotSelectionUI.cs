@@ -7,16 +7,26 @@ namespace POLYGONWARE.Common.UI
 {
 public class SlotSelectionUI<T> : MonoBehaviour
 {
-    [SerializeField] private T _slotPrefab;
-    [SerializeField] private T[] _predefinedSlots;
+    [Header("Slot Selection")]
+    [SerializeField] private SlotUI<T> _slotPrefab;
+    [SerializeField] private SlotUI<T>[] _predefinedSlots;
+    [SerializeField] private Transform _panel;
 
-    private readonly List<T> _slots = new();
+    private readonly List<SlotUI<T>> _slots = new();
 
-    public event GenericDelegate<int> ESlotSelected;
+    public event GenericDelegate<T> ESlotSelected;
 
-    public virtual void SetSelected<T2>(SlotUI<T2> slotUI)
+    public virtual void SetSelected(T value)
     {
         Debug.Log("selected T");
+    }
+
+    public virtual void AddButton(T value)
+    {
+        _panel = !_panel ? transform : _panel;
+        var newButton = Instantiate(_slotPrefab, _panel);
+        newButton.SetData(value);
+        _slots.Add(newButton);
     }
 }
 }
