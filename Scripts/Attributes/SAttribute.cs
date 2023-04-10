@@ -23,5 +23,10 @@ namespace POLYGONWARE.Common
         {
             EChanged?.Invoke(_value);
         }
+
+        public static implicit operator SAttribute<T>(T value)
+        {
+            return new SAttribute<T> { Value = value };
+        }
     }
 }
