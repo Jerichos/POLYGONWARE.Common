@@ -7,18 +7,19 @@ namespace POLYGONWARE.Common
     public class FollowPath : MonoBehaviour
     {
         [SerializeField] private float _speed = 10;
-        [SerializeField] private PathManager _pathManager;
-        [FormerlySerializedAs("_pathPoint")] [SerializeField] private int _currentPoint = 0;
+        [SerializeField] private Path _path;
+        [SerializeField] private int _currentPoint = 0;
         [SerializeField] private bool _loop = false;
         [SerializeField] private bool _forward = true;
 
         private IFollowPath _followPath;
 
-        public event GenericDelegate<GameObject> EPathEnded; 
+        //public event GenericDelegate<GameObject> EPathEnded;
+        public VoidDelegate PathEndCallback;
 
-        public PathManager Path
+        public void SetPath(Path path)
         {
-            set => _pathManager = value;
+            _path = path;
         }
 
         public float Speed
@@ -26,20 +27,32 @@ namespace POLYGONWARE.Common
             get => _speed;
             set => _speed = value;
         }
+
+        public void Stop()
+        {
+            enabled = false;
+        }
+
+        public void StartFollow(Path path)
+        {
+            _path = path;
+            _currentPoint = 0;
+            enabled = true;
+        }
         
         private void Start()
         {
-            transform.position = _pathManager.Path.Nodes[_currentPoint];
+            transform.position = _path.GetPosition(0);
 
             if (_forward)
-                _followPath = new ForwardFollow(_currentPoint, _pathManager.Path.Nodes.Length);
+                _followPath = new ForwardFollow(_currentPoint, _path.Nodes.Length);
             else
-                _followPath = new BackwardFollow(_currentPoint, _pathManager.Path.Nodes.Length);
+                _followPath = new BackwardFollow(_currentPoint, _path.Nodes.Length);
         }
 
         private void Update()
         {
-            var endPosition = _pathManager.GetPosition(_followPath.GetNextPoint());
+            var endPosition = _path.GetNextPoint(_currentPoint);
 
             var position = Vector3.MoveTowards(transform.position, endPosition, _speed * Time.deltaTime);
 
@@ -52,7 +65,8 @@ namespace POLYGONWARE.Common
                 if (_followPath.IsEndOfPath())
                 {
                     OnPathEnded();
-                    EPathEnded?.Invoke(gameObject);
+                    //EPathEnded?.Invoke(gameObject);
+                    PathEndCallback?.Invoke();
                     
                     if (_loop)
                         _followPath = _followPath.GetNextFollowPath();
@@ -66,8 +80,6 @@ namespace POLYGONWARE.Common
         {
             
         }
-        
-    
     }
 
     public interface IFollowPath

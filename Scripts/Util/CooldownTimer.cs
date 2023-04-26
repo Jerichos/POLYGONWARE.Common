@@ -19,8 +19,12 @@ namespace POLYGONWARE.Common
         public CooldownTimer(float cooldown, CooldownTimer timer)
         {
             this = timer;
+            
             if (cooldown <= 0)
                 cooldown = 0.01f;
+
+            if (_lastTime == 0)
+                _lastTime = -cooldown;
             
             _cooldown = cooldown;
         }
@@ -30,7 +34,7 @@ namespace POLYGONWARE.Common
             return Time.time - _lastTime > _cooldown;
         }
 
-        public void Reset()
+        public void Restart()
         {
             _lastTime = Time.time;
         }

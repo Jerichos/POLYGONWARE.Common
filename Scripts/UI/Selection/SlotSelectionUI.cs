@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace POLYGONWARE.Common.UI
 {
-public class SlotSelectionUI<T> : MonoBehaviour
+public abstract class SlotSelectionUI<T> : MonoBehaviour
 {
     [Header("Slot Selection")]
     [SerializeField] private SlotUI<T> _slotPrefab;

@@ -32,7 +32,7 @@ public class Singleton<T> : MonoBehaviour where T: Component
         }
 
         _instance = GetComponent<T>();
-        Debug.Log(name + " Singleton Initialized");
+        transform.Log(typeof(T) + " Singleton Initialized");
         
         if(_dontDestroyOnLoad)
             DontDestroyOnLoad(gameObject);

@@ -12,6 +12,15 @@ namespace POLYGONWARE.Common
         public Vector3 FirstNode => Nodes[0];
         public Vector3 LastNode => Nodes[^1];
 
+        public Vector3 GetNextPoint(int currentPoint)
+        {
+            int nextPoint = currentPoint + 1;
+            
+            if (nextPoint >= Nodes.Length)
+                nextPoint = 0;
+
+            return Nodes[nextPoint];
+        }
     }
     
     public static class PathExtensions

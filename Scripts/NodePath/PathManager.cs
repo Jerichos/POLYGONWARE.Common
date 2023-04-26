@@ -14,9 +14,6 @@ namespace POLYGONWARE.Common
             if(Path.Nodes.Length <= 1)
                 return;
 
-            Gizmos.DrawIcon(Path.FirstNode, "Light", false);
-            Gizmos.DrawIcon(Path.LastNode, "Light", false);
-
             Gizmos.color = Color.red;
             for (int i = 1; i < Path.Nodes.Count(); i++)
             {

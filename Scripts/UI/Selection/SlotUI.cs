@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 namespace POLYGONWARE.Common.UI
 {
-public class SlotUI<T> : UnityEngine.UI.Selectable
+public abstract class SlotUI<T> : UnityEngine.UI.Selectable
 {
     // TODO: this part has to be figured out...
     [SerializeField] protected SlotSelectionUI<T> _selectionGroupParent;

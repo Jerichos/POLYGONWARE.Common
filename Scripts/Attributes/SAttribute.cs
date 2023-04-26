@@ -1,8 +1,10 @@
 ﻿using System;
 using POLYGONWARE.Common.Util;
+using UnityEngine;
 
 namespace POLYGONWARE.Common
 {
+    [Serializable]
     public struct SAttribute<T>
     {
         private T _value;
@@ -19,6 +21,11 @@ namespace POLYGONWARE.Common
 
         public event GenericDelegate<T> EChanged;
 
+        public void SetValue(T value)
+        {
+            Value = value;
+        }
+
         public void InvokeOnChange()
         {
             EChanged?.Invoke(_value);
@@ -28,5 +35,11 @@ namespace POLYGONWARE.Common
         {
             return new SAttribute<T> { Value = value };
         }
+        
+        public static implicit operator T(SAttribute<T> myClassInstance)
+        {
+            return myClassInstance.Value;
+        }
+
     }
 }
