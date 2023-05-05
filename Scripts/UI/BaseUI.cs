@@ -6,6 +6,8 @@ namespace POLYGONWARE.Common.UI
 {
     public abstract class BaseUI : MonoBehaviour, IUI
     {
+        [SerializeField] protected Transform _panel;
+        
         private void Awake()
         {
             if (enabled)
@@ -50,6 +52,9 @@ namespace POLYGONWARE.Common.UI
             return this;
         }
 
-        protected virtual void OnClose() { }
+        protected virtual void OnClose()
+        {
+            
+        }
     }
 }

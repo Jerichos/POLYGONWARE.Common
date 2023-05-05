@@ -36,7 +36,6 @@ namespace POLYGONWARE.Common
         public void StartFollow(Path path)
         {
             _path = path;
-            _currentPoint = 0;
             enabled = true;
         }
         
@@ -60,7 +59,7 @@ namespace POLYGONWARE.Common
 
             if (endPosition == position)
             {
-                _followPath.SetNextPoint();
+                _currentPoint = _followPath.SetNextPoint();
                 
                 if (_followPath.IsEndOfPath())
                 {
@@ -84,9 +83,8 @@ namespace POLYGONWARE.Common
 
     public interface IFollowPath
     {
-        void SetNextPoint();
+        int SetNextPoint();
         bool IsEndOfPath();
-        int GetNextPoint();
 
         IFollowPath GetNextFollowPath();
     }
@@ -102,12 +100,15 @@ namespace POLYGONWARE.Common
             PointCount = pointCount;
             CurrentPoint = currentPoint;
             NextPoint = currentPoint + 1;
+            Debug.Log("PointCount " + pointCount);
         }
 
-        public void SetNextPoint()
+        public int SetNextPoint()
         {
             CurrentPoint = NextPoint;
             NextPoint++;
+            Debug.Log("NextPoint " + CurrentPoint);
+            return CurrentPoint;
         }
 
         public bool IsEndOfPath()
@@ -154,10 +155,11 @@ namespace POLYGONWARE.Common
             return false;
         }
 
-        public void SetNextPoint()
+        public int SetNextPoint()
         {
             CurrentPoint = NextPoint;
             NextPoint--;
+            return CurrentPoint;
         }
 
         public int GetNextPoint()

@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using POLYGONWARE.Common.Util;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 
 namespace POLYGONWARE.Common
 {
@@ -87,5 +89,26 @@ namespace POLYGONWARE.Common
         {
             return EventSystem.current.currentSelectedGameObject;
         }
+        
+        public static bool IsMouseOverUi
+        {
+            get
+            {
+                // [Only works well while there is not PhysicsRaycaster on the Camera)
+                EventSystem eventSystem = EventSystem.current;
+                return (eventSystem != null && eventSystem.IsPointerOverGameObject());
+     
+                // [Works with PhysicsRaycaster on the Camera. Requires New Input System. Assumes mouse.)
+                if (EventSystem.current == null)
+                {
+                    return false;
+                }
+                
+                RaycastResult lastRaycastResult = ((InputSystemUIInputModule)EventSystem.current.currentInputModule).GetLastRaycastResult(Mouse.current.deviceId);
+                const int uiLayer = 5;
+                return lastRaycastResult.gameObject != null && lastRaycastResult.gameObject.layer == uiLayer;
+            }
+        }
+
     }
 }

@@ -1,25 +1,50 @@
 ﻿using POLYGONWARE.Common.Util;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace POLYGONWARE.Common.UI
 {
-public abstract class SlotUI<T> : UnityEngine.UI.Selectable
+public abstract class SlotUI : UnityEngine.UI.Selectable
 {
     // TODO: this part has to be figured out...
-    [SerializeField] protected SlotSelectionUI<T> _selectionGroupParent;
+    [SerializeField] protected SlotSelectionUI _selectionGroupParent;
 
-    private T _value;
+    public int SlotID { get; protected set; }
+
+    private bool _blockDeselect;
     
     public override void OnSelect(BaseEventData eventData)
     {
+        Debug.Log("OnSelect");
         base.OnSelect(eventData);
-        _selectionGroupParent.SetSelected(_value);
+        _selectionGroupParent.OnSlotSelected(this);
     }
 
-    public virtual void SetData(T value)
+    public override void OnDeselect(BaseEventData eventData)
     {
-        _value = value;
+        if (_blockDeselect)
+        {
+            Debug.Log("BLOCKED");
+            return;
+        }
+        
+        Debug.Log("OnDeselect");
+        base.OnDeselect(eventData);
+        _selectionGroupParent.OnSlotDeselected(this);
+    }
+
+    public void Deselect()
+    {
+        base.OnDeselect(new BaseEventData(EventSystem.current));
+    }
+
+    public void SetDeselectBlock(bool block)
+    {
+        _blockDeselect = block;
+        
+        if(!block)
+            Deselect();
     }
 }
 }

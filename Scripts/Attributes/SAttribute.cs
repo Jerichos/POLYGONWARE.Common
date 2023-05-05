@@ -7,7 +7,7 @@ namespace POLYGONWARE.Common
     [Serializable]
     public struct SAttribute<T>
     {
-        private T _value;
+        [SerializeField] private T _value;
 
         public T Value
         {

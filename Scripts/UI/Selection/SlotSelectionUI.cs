@@ -1,32 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using POLYGONWARE.Common.Util;
 using UnityEngine;
 
 namespace POLYGONWARE.Common.UI
 {
-public abstract class SlotSelectionUI<T> : MonoBehaviour
+public abstract class SlotSelectionUI : BaseUI
 {
     [Header("Slot Selection")]
-    [SerializeField] private SlotUI<T> _slotPrefab;
-    [SerializeField] private SlotUI<T>[] _predefinedSlots;
-    [SerializeField] private Transform _panel;
+    [SerializeField] private SlotUI _slotPrefab;
+    [SerializeField] private SlotUI[] _predefinedSlots;
+    [SerializeField] protected Transform _slotPanel;
 
-    private readonly List<SlotUI<T>> _slots = new();
+    protected List<SlotUI> _slots;
 
-    public event GenericDelegate<T> ESlotSelected;
-
-    public virtual void SetSelected(T value)
+    public virtual void OnSlotSelected(SlotUI slot)
     {
-        Debug.Log("selected T");
     }
 
-    public virtual void AddButton(T value)
+    public virtual void OnSlotDeselected(SlotUI slot)
     {
-        _panel = !_panel ? transform : _panel;
-        var newButton = Instantiate(_slotPrefab, _panel);
-        newButton.SetData(value);
+    }
+
+    public virtual SlotUI AddSlot(SlotUI value)
+    {
+        _slotPanel = !_slotPanel ? transform : _slotPanel;
+        var newButton = Instantiate(_slotPrefab, _slotPanel);
+        _slots.Add(newButton);
+        return newButton;
+    }
+
+    public virtual void AddSlot()
+    {
+        _slotPanel = !_slotPanel ? transform : _slotPanel;
+        var newButton = Instantiate(_slotPrefab, _slotPanel);
         _slots.Add(newButton);
     }
+
 }
 }

@@ -15,6 +15,7 @@ public class Spawner : MonoBehaviour
     private int _spawned;
 
     private GenericDelegate<Object> _callback;
+    private Type _type;
 
     private void Update()
     {
