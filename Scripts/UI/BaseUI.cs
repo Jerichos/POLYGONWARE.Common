@@ -8,7 +8,7 @@ namespace POLYGONWARE.Common.UI
     {
         [SerializeField] protected Transform _panel;
         
-        private void Awake()
+        protected virtual void Awake()
         {
             if (enabled)
             {
@@ -25,31 +25,38 @@ namespace POLYGONWARE.Common.UI
         public virtual IUI Open()
         {
             // gameObject.Log("Open");
-            gameObject.SetActive(true);
+            _panel.gameObject.SetActive(true);
+            OnOpen();
             return this;
         }
 
         public virtual IUI Open<T>(T arg)
         {
             // gameObject.Log("Open T");
-            gameObject.SetActive(true);
+            _panel.gameObject.SetActive(true);
+            OnOpen();
             return this;
         }
 
         public virtual IUI Close()
         {
             // gameObject.Log("Close");
+            _panel.gameObject.SetActive(false);
             OnClose();
-            gameObject.SetActive(false);
             return this;
         }
 
         public virtual IUI Toggle()
         {
             // gameObject.Log("toggle");
-            var open = !gameObject.activeInHierarchy;
-            gameObject.SetActive(open);
-            return this;
+            var open = !_panel.gameObject.activeInHierarchy;
+
+            return open ? Open() : Close();
+        }
+
+        protected virtual void OnOpen()
+        {
+            
         }
 
         protected virtual void OnClose()

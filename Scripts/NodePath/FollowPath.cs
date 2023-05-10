@@ -100,14 +100,12 @@ namespace POLYGONWARE.Common
             PointCount = pointCount;
             CurrentPoint = currentPoint;
             NextPoint = currentPoint + 1;
-            Debug.Log("PointCount " + pointCount);
         }
 
         public int SetNextPoint()
         {
             CurrentPoint = NextPoint;
             NextPoint++;
-            Debug.Log("NextPoint " + CurrentPoint);
             return CurrentPoint;
         }
 

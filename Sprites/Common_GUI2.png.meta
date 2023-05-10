@@ -146,6 +146,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Common_GUI2_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eda34b60b485a6e4b8ef4560c83d9f43
+      internalID: 23144630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -159,6 +180,7 @@ TextureImporter:
     nameFileIdTable:
       Common_GUI2_0: -641206255
       Common_GUI2_1: -1922613070
+      Common_GUI2_2: 23144630
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
