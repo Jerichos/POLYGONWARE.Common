@@ -1,5 +1,4 @@
-﻿using POLYGONWARE.Common.Physics;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace POLYGONWARE.Common
 {

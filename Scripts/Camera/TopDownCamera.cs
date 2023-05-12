@@ -3,19 +3,18 @@ using UnityEngine;
 
 namespace POLYGONWARE.Common
 {
-    public class TopDownCamera : MonoBehaviour
+    public class TopDownCamera : PlayerCamera
     {
         [SerializeField] private Vector3 _offset;
-        [SerializeField] private Transform _target;
-
         private Transform _transform;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _transform = transform;
         }
 
-        private void Update()
+        protected override void FollowTarget()
         {
             Vector3 targetPosition = _target.position + _offset;
             _transform.position = Vector3.Lerp(_transform.position, targetPosition, 10 * Time.deltaTime);

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace POLYGONWARE.Common.Physics
+namespace POLYGONWARE.Common
 {
     [RequireComponent(typeof(BoxPhysics2D))]
     public class Gravity2D : MonoBehaviour

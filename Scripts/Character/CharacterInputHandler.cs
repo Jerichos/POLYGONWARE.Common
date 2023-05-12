@@ -5,7 +5,7 @@ namespace POLYGONWARE.Common
 {
     public class CharacterInputHandler : IInputHandler
     {
-        private CharacterManager _character;
+        private readonly CharacterManager _character;
         private readonly PlayerControls.CharacterActions _characterActions;
 
         public CharacterInputHandler(PlayerControls playerControls, IControllable controllable)
@@ -19,11 +19,24 @@ namespace POLYGONWARE.Common
             _characterActions.Movement.performed += OnMovementPerformed;
             _characterActions.Movement.started += OnMovementStarted;
             _characterActions.Movement.canceled += OnMovementCanceled;
+
+            _characterActions.Jump.started += OnJumpStarted;
+            _characterActions.Jump.canceled += OnJumpStopped;
             
             playerControls.Enable();
             _characterActions.Enable();
             
             Debug.Log("Handler created.");
+        }
+
+        private void OnJumpStopped(InputAction.CallbackContext obj)
+        {
+            _character.Physics.JumpStop();
+        }
+
+        private void OnJumpStarted(InputAction.CallbackContext obj)
+        {
+            _character.Physics.JumpStart();
         }
 
         private void OnMovementStarted(InputAction.CallbackContext obj)

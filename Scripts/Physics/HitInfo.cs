@@ -1,4 +1,4 @@
-﻿namespace POLYGONWARE.Common.Physics
+﻿namespace POLYGONWARE.Common
 {
     public struct HitInfo
     {
