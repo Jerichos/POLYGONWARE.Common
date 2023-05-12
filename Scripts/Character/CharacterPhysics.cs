@@ -11,10 +11,21 @@ namespace POLYGONWARE.Common
         [SerializeField] private float _rotationSpeed = 10;
         [SerializeField] private float _smoothTime = 0.1f;
         [SerializeField] private float _stepHeight = 0.25f;
+        
+        [Header("Jump")]
+        [SerializeField] private float _maxJumpHeight = 2;
+        [SerializeField] private float _maxJumpInSeconds = 0.5f;
+        [SerializeField] private AnimationCurve _jumpCurve;
 
-        private float _stepRayLength;
+        [Header("Gravity")] 
+        [SerializeField] private float _maxGravity = -10;
+        [SerializeField] private AnimationCurve _gravityCurve;
+
+        [Header("Physics")] 
+        [SerializeField] private BoxCollider _boxCollider;
+
         private float _jumpT;
-        private float _maxJumpHeight = 2;
+        private float _gravityT;
         
         private Vector3 _direction;
         private Vector3 _velocity;
@@ -35,27 +46,26 @@ namespace POLYGONWARE.Common
         private RaycastHit _verticalHit;
         private RaycastHit _horizontalHit;
 
+        public bool Grounded => _grounded;
+        
         private void Awake()
         {
             _transform = GetComponent<Transform>();
-            _stepRayLength = _stepHeight * 2;
         }
 
         private void Update()
         {
             // calculate velocity
             _velocity = Vector3.SmoothDamp(_velocity, _targetVelocity, ref _velocity, _smoothTime);
-            _velocity.y = -9; // gravity
             _velocityDelta = _velocity * Time.deltaTime;
-            _grounded = false;
             
             Debug.Log($"velocityDelta {_velocityDelta.y}");
-  
+            
             // Cast a ray downward to check for the ground
             // Ray ray = new Ray(_transform.position + Vector3.up * _stepHeight + _velocityDelta, Vector3.down);
             // RaycastHit hit;
-            
-            if (Physics.BoxCast(_transform.position + Vector3.up * 0.5f, new Vector3(0.6f, 0.1f, 0.6f), Vector3.down,
+            var colliderHalf = _boxCollider.size / 2;
+            if (Physics.BoxCast(_transform.position + Vector3.up * (_stepHeight + 0.1f), new Vector3(colliderHalf.x, 0.1f, colliderHalf.z), Vector3.down,
                     out _verticalHit, Quaternion.identity, 0.5f + Mathf.Abs(_velocityDelta.y), _collisionLayer) && !_isJumping)
             {
                 Debug.Log("Grounded true");
@@ -63,9 +73,17 @@ namespace POLYGONWARE.Common
             }
             else
             {
-                Debug.Log("Grounded false");
                 _grounded = false;
             }
+            
+            // if not grounded, apply gravity
+            if (!_grounded)
+            {
+                _gravityT += Time.deltaTime;
+                _velocityDelta.y = _gravityCurve.Evaluate(_gravityT) * Time.deltaTime * _maxGravity;
+            }
+            
+            // TODO: Handle slope angles
             
             // if (UnityEngine.Physics.Raycast(ray, out hit, _stepRayLength, _groundMask) && !_isJumping) 
             // {
@@ -82,9 +100,18 @@ namespace POLYGONWARE.Common
             if (_isJumping)
             {
                 // jumpT == 1 is highest possible jump
-                var jumpT = _jumpT + Time.deltaTime;
-                var jumpDelta = jumpT - _jumpT;
+                var jumpT = _jumpT + (Time.deltaTime / _maxJumpInSeconds);
+                
+                var t = _jumpCurve.Evaluate(jumpT);
+                var prevT = _jumpCurve.Evaluate(_jumpT);
+                
+                var jumpDelta = t - prevT;
                 _jumpT = jumpT;
+
+                if (jumpT >= 1)
+                {
+                    JumpStop();
+                }
 
                 _velocityDelta.y = jumpDelta * _maxJumpHeight;
                 Debug.Log($"velocityY {_velocityDelta.y}");
@@ -95,8 +122,11 @@ namespace POLYGONWARE.Common
             {
                 var horizontalVelocityDelta = _velocityDelta;
                 horizontalVelocityDelta.y = 0;
+
+                var colliderExtents = _boxCollider.size / 2;
+                colliderExtents.y -= _stepHeight /2;
                 
-                _isHorizontalHit = Physics.BoxCast(_transform.position + Vector3.up * 0.5f, Vector3.one * 0.5f, horizontalVelocityDelta.normalized, 
+                _isHorizontalHit = Physics.BoxCast(_transform.position + Vector3.up * (colliderExtents.y + _stepHeight), new Vector3(colliderExtents.x, colliderExtents.y, colliderExtents.z), horizontalVelocityDelta.normalized, 
                     out _horizontalHit, Quaternion.identity, horizontalVelocityDelta.magnitude, _collisionLayer);
 
                 if(_isHorizontalHit)
@@ -132,12 +162,15 @@ namespace POLYGONWARE.Common
         {
             // Snap the character to the ground
             Debug.Log($"grounded {groundPosition}");
-            var snapPosition = Mathf.Lerp(_transform.position.y, groundPosition.y, 100 * Time.deltaTime);
+            var snapPosition = Mathf.Lerp(_transform.position.y, groundPosition.y, 20 * Time.deltaTime);
             var position = _transform.position;
             position.y = snapPosition;
             _transform.position = position;
+            
             _velocity.y = 0;
             _velocityDelta.y = 0;
+            _gravityT = 0;
+            
             _grounded = true;
         }
 
@@ -191,11 +224,14 @@ namespace POLYGONWARE.Common
             //Check if there has been a hit yet
             if (_isHorizontalHit)
             {
+                var colliderExtents = _boxCollider.size / 2;
+                colliderExtents.y -= _stepHeight / 2;
+                
                 Gizmos.color = Color.red;
                 //Draw a Ray forward from GameObject toward the hit
-                Gizmos.DrawRay(transform.position + Vector3.up * 0.5f, transform.forward * _horizontalHit.distance);
+                Gizmos.DrawRay(_transform.position + Vector3.up * (colliderExtents.y + _stepHeight), transform.forward * _horizontalHit.distance);
                 //Draw a cube that extends to where the hit exists
-                Gizmos.DrawWireCube(transform.position + Vector3.up * 0.5f + transform.forward * _horizontalHit.distance, transform.localScale);
+                Gizmos.DrawWireCube(_transform.position + Vector3.up * (colliderExtents.y + _stepHeight) + transform.forward * _horizontalHit.distance, _boxCollider.size);
             }
             //If there hasn't been a hit yet, draw the ray at the maximum distance
             else

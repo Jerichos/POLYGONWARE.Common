@@ -20,11 +20,17 @@ namespace POLYGONWARE.Common
         {
             _target = target;
             enabled = true;
+            OnTargetSet(target);
         }
         
         public bool IsOnScreen(Vector2 position, Vector2 offset)
         {
             return true;
+        }
+
+        protected virtual void OnTargetSet(Transform target)
+        {
+            
         }
 
         private void OnEnable()
