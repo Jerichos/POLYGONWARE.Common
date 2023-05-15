@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace POLYGONWARE.Common.Sprite
+namespace POLYGONWARE.Common
 {
     public class CellLineRenderer : MonoBehaviour
     {

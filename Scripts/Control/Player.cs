@@ -14,7 +14,7 @@ namespace POLYGONWARE.Common
         private void Start()
         {
             LocalPlayer = this;
-            LevelManager.Instance.AddPlayer(this);
+            //LevelManager.Instance.AddPlayer(this);
         }
 
         public void AssignToControl(Controllable character)

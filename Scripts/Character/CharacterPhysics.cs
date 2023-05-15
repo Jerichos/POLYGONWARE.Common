@@ -59,8 +59,6 @@ namespace POLYGONWARE.Common
             _velocity = Vector3.SmoothDamp(_velocity, _targetVelocity, ref _velocity, _smoothTime);
             _velocityDelta = _velocity * Time.deltaTime;
             
-            Debug.Log($"velocityDelta {_velocityDelta.y}");
-            
             // Cast a ray downward to check for the ground
             // Ray ray = new Ray(_transform.position + Vector3.up * _stepHeight + _velocityDelta, Vector3.down);
             // RaycastHit hit;
@@ -68,7 +66,6 @@ namespace POLYGONWARE.Common
             if (Physics.BoxCast(_transform.position + Vector3.up * (_stepHeight + 0.1f), new Vector3(colliderHalf.x, 0.1f, colliderHalf.z), Vector3.down,
                     out _verticalHit, Quaternion.identity, 0.5f + Mathf.Abs(_velocityDelta.y), _collisionLayer) && !_isJumping)
             {
-                Debug.Log("Grounded true");
                 OnGrounded(_verticalHit.point);
             }
             else
@@ -114,7 +111,6 @@ namespace POLYGONWARE.Common
                 }
 
                 _velocityDelta.y = jumpDelta * _maxJumpHeight;
-                Debug.Log($"velocityY {_velocityDelta.y}");
             }
             
             // check horizontal collisions
@@ -133,7 +129,6 @@ namespace POLYGONWARE.Common
                 {
                     // handle movement along the normal:
                     var dot = Vector3.Dot(_horizontalHit.normal, _velocityDelta.normalized);
-                    Debug.Log($"horizontal collision {_horizontalHit.normal} dot: {dot}");
 
                     var horizontalVelocity = _velocity;
                     horizontalVelocity.y = 0;
@@ -151,7 +146,6 @@ namespace POLYGONWARE.Common
             }
             
             // Move the character based on the velocity
-            Debug.Log($"apply velocity: {_velocityDelta}");
             _transform.position += _velocityDelta;
 
             // Smoothly rotate the character to the movement direction
@@ -161,7 +155,6 @@ namespace POLYGONWARE.Common
         private void OnGrounded(Vector3 groundPosition)
         {
             // Snap the character to the ground
-            Debug.Log($"grounded {groundPosition}");
             var snapPosition = Mathf.Lerp(_transform.position.y, groundPosition.y, 20 * Time.deltaTime);
             var position = _transform.position;
             position.y = snapPosition;
@@ -202,8 +195,6 @@ namespace POLYGONWARE.Common
             _targetVelocity.z = _targetVelocity.y;
             _targetVelocity.y = 0;
             
-            Debug.Log($"direction {_direction} targetVelocity {_targetVelocity}");
-            
             if(direction != Vector2.zero)
                 _targetDirection = Quaternion.LookRotation(_targetVelocity);
             // Debug.Log("TargetVelocity: " + _targetVelocity);
@@ -213,7 +204,6 @@ namespace POLYGONWARE.Common
         {
             _targetVelocity = Vector2.zero;
             _direction = Vector3.zero;
-            Debug.Log($"direction {_direction} targetVelocity {_targetVelocity}");
         }
         
         //Draw the BoxCast as a gizmo to show where it currently is testing. Click the Gizmos button to see this

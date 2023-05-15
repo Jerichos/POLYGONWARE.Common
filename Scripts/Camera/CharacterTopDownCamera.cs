@@ -18,6 +18,12 @@ namespace POLYGONWARE.Common
 
         protected override void FollowTarget()
         {
+            if (!_target)
+            {
+                enabled = false;
+                return;
+            }
+            
             Vector3 targetPosition = _target.position + _offset;
 
             if (!_characterPhysics.Grounded)

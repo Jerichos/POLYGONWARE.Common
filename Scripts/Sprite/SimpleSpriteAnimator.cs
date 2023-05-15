@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace POLYGONWARE.Common.Sprite
+namespace POLYGONWARE.Common
 {
     public class SimpleSpriteAnimator : MonoBehaviour
     {

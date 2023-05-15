@@ -7,6 +7,8 @@ namespace POLYGONWARE.Common.UI
     public abstract class BaseUI : MonoBehaviour, IUI
     {
         [SerializeField] protected Transform _panel;
+
+        public bool IsOpen => _panel.gameObject.activeSelf;
         
         protected virtual void Awake()
         {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace POLYGONWARE.Common.Sprite
+namespace POLYGONWARE.Common
 {
     [Serializable]
     public struct SpriteAnimationData
