@@ -3,10 +3,17 @@ using UnityEngine;
 
 namespace POLYGONWARE.Common
 {
+
+public enum PhysicsState
+{
+    Ground,
+    Water
+}
     public class CharacterPhysics : MonoBehaviour
     {
         [SerializeField] private LayerMask _groundMask;
         [SerializeField] private LayerMask _collisionLayer;
+        [SerializeField] private LayerMask _waterLayer;
         [SerializeField] private float _walkSpeed = 2;
         [SerializeField] private float _rotationSpeed = 10;
         [SerializeField] private float _smoothTime = 0.1f;
@@ -24,6 +31,10 @@ namespace POLYGONWARE.Common
         [Header("Physics")] 
         [SerializeField] private BoxCollider _boxCollider;
 
+        [Header("Water")] 
+        [SerializeField] private ProxyTrigger _shallowWaterTrigger;
+        [SerializeField] private ProxyTrigger _deepWaterTrigger;
+
         private float _jumpT;
         private float _gravityT;
         
@@ -35,6 +46,7 @@ namespace POLYGONWARE.Common
         private Quaternion _targetDirection;
 
         private Transform _transform;
+        private PhysicsState _state;
 
         public Vector3 Velocity => _velocity;
         public Vector3 VelocityDelta => _velocityDelta;
@@ -55,6 +67,12 @@ namespace POLYGONWARE.Common
 
         private void Update()
         {
+            // TODO: separate each handler into separate classes
+            UpdateGroundState();
+        }
+
+        private void UpdateGroundState()
+        {
             // calculate velocity
             _velocity = Vector3.SmoothDamp(_velocity, _targetVelocity, ref _velocity, _smoothTime);
             _velocityDelta = _velocity * Time.deltaTime;
@@ -66,6 +84,7 @@ namespace POLYGONWARE.Common
             if (Physics.BoxCast(_transform.position + Vector3.up * (_stepHeight + 0.1f), new Vector3(colliderHalf.x, 0.1f, colliderHalf.z), Vector3.down,
                     out _verticalHit, Quaternion.identity, 0.5f + Mathf.Abs(_velocityDelta.y), _collisionLayer) && !_isJumping)
             {
+                Debug.Log("grounded");
                 OnGrounded(_verticalHit.point);
             }
             else
@@ -79,8 +98,13 @@ namespace POLYGONWARE.Common
                 _gravityT += Time.deltaTime;
                 _velocityDelta.y = _gravityCurve.Evaluate(_gravityT) * Time.deltaTime * _maxGravity;
             }
+
+            if (_state == PhysicsState.Water)
+            {
+                _velocityDelta.y = 0;
+            }
             
-            // TODO: Handle slope angles
+            // TODO: Better handle slope angles
             
             // if (UnityEngine.Physics.Raycast(ray, out hit, _stepRayLength, _groundMask) && !_isJumping) 
             // {
@@ -169,7 +193,7 @@ namespace POLYGONWARE.Common
 
         public void JumpStart()
         {
-            if(_isJumping || !_grounded)
+            if(_isJumping || (!_grounded && _state == PhysicsState.Ground))
                 return;
 
             Debug.Log("JumpStart");
@@ -206,6 +230,28 @@ namespace POLYGONWARE.Common
             _direction = Vector3.zero;
         }
         
+        private void OnDeepWaterExit(Collider value)
+        {
+            _state = PhysicsState.Ground;
+        }
+
+        private void OnDeepWaterEnter(Collider value)
+        {
+            _state = PhysicsState.Water;
+        }
+
+        private void OnEnable()
+        {
+            _deepWaterTrigger.OnEnter += OnDeepWaterEnter;
+            _deepWaterTrigger.OnExit += OnDeepWaterExit;
+        }
+
+        private void OnDisable()
+        {
+            _deepWaterTrigger.OnEnter -= OnDeepWaterEnter;
+            _deepWaterTrigger.OnExit -= OnDeepWaterExit;
+        }
+
         //Draw the BoxCast as a gizmo to show where it currently is testing. Click the Gizmos button to see this
         void OnDrawGizmos()
         {

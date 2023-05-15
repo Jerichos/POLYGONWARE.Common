@@ -31,7 +31,6 @@ public class ConsoleUI : BaseUI
     {
         if (Input.GetKeyDown(KeyCode.F10))
         {
-            Debug.Log("toggle console");
             Toggle();
         }
 
