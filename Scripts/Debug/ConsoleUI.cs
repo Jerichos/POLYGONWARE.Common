@@ -66,15 +66,13 @@ public class ConsoleUI : BaseUI
         string[] split = curText.Split(" ");
         string command = split[0];
         
-        if(split.Length <= 1)
-            ListAllCommandsOf(command);
-        
         List<string> availableCommands = new();
 
         CommandProviderBehaviour currentCommandProvider = null;
         
         foreach (CommandProviderBehaviour commandProvider in _commandProviders)
         {
+            
             foreach (var commands in commandProvider.Commands)
             {
                 if (commands.Key.Contains(command))
@@ -113,11 +111,6 @@ public class ConsoleUI : BaseUI
         }
     }
 
-    private void ListAllCommandsOf(string command)
-    {
-        
-    }
-
     private void OnCommandTextChanged(string text)
     {
         // TODO: auto-complete
@@ -125,7 +118,6 @@ public class ConsoleUI : BaseUI
 
     private void OnCommandTextEnd(string text)
     {
-        Debug.Log($"Command {text}");
         _commandInputField.SetTextWithoutNotify("");
         string[] command = text.Split(" ");
         
