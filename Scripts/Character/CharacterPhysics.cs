@@ -84,7 +84,6 @@ public enum PhysicsState
             if (Physics.BoxCast(_transform.position + Vector3.up * (_stepHeight + 0.1f), new Vector3(colliderHalf.x, 0.1f, colliderHalf.z), Vector3.down,
                     out _verticalHit, Quaternion.identity, 0.5f + Mathf.Abs(_velocityDelta.y), _collisionLayer) && !_isJumping)
             {
-                Debug.Log("grounded");
                 OnGrounded(_verticalHit.point);
             }
             else
@@ -136,6 +135,8 @@ public enum PhysicsState
 
                 _velocityDelta.y = jumpDelta * _maxJumpHeight;
             }
+
+            var targetRotation = _targetDirection;
             
             // check horizontal collisions
             if (_velocityDelta.x != 0 || _velocityDelta.z != 0)
@@ -157,10 +158,11 @@ public enum PhysicsState
                     var horizontalVelocity = _velocity;
                     horizontalVelocity.y = 0;
                     
-                    var newDirection = Vector3.ProjectOnPlane(horizontalVelocityDelta.normalized, _horizontalHit.normal);
+                    var newHorizontalDirection = Vector3.ProjectOnPlane(horizontalVelocityDelta.normalized, _horizontalHit.normal);
+                    targetRotation = Quaternion.Euler(newHorizontalDirection);
 
-                    horizontalVelocity = newDirection * horizontalVelocity.magnitude;
-                    horizontalVelocityDelta = newDirection * horizontalVelocityDelta.magnitude;
+                    horizontalVelocity = newHorizontalDirection * horizontalVelocity.magnitude;
+                    horizontalVelocityDelta = newHorizontalDirection * horizontalVelocityDelta.magnitude;
 
                     _velocity.x = horizontalVelocity.x;
                     _velocity.z = horizontalVelocity.z;
@@ -173,7 +175,7 @@ public enum PhysicsState
             _transform.position += _velocityDelta;
 
             // Smoothly rotate the character to the movement direction
-            _transform.rotation = Quaternion.Lerp(_transform.rotation, _targetDirection, Time.deltaTime * _rotationSpeed);
+            _transform.rotation = Quaternion.Lerp(_transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
         }
 
         private void OnGrounded(Vector3 groundPosition)

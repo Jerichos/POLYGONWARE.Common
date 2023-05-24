@@ -1,6 +1,7 @@
 ﻿using System;
 using POLYGONWARE.Common.Util;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace POLYGONWARE.Common
 {
