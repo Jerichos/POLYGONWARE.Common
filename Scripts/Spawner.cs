@@ -19,7 +19,7 @@ public class Spawner : MonoBehaviour
 
     private void Update()
     {
-        if (_timer.TimePassed())
+        if (_timer.TimePassed)
         {
             Spawn();
             _timer.Restart();

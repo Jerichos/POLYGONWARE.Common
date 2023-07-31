@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using POLYGONWARE.Common.Util;
+using UnityEngine;
 
 namespace POLYGONWARE.Common
 {
@@ -6,7 +7,7 @@ namespace POLYGONWARE.Common
     {
         private readonly float _cooldown;
         private float _lastTime;
-        
+
         public CooldownTimer(float cooldown)
         {
             if (cooldown <= 0)
@@ -15,7 +16,7 @@ namespace POLYGONWARE.Common
             _cooldown = cooldown;
             _lastTime = -cooldown;
         }
-
+        
         public CooldownTimer(float cooldown, CooldownTimer timer)
         {
             this = timer;
@@ -29,10 +30,7 @@ namespace POLYGONWARE.Common
             _cooldown = cooldown;
         }
 
-        public bool TimePassed()
-        {
-            return Time.time - _lastTime > _cooldown;
-        }
+        public bool TimePassed => Time.time - _lastTime > _cooldown;
 
         public void Restart()
         {

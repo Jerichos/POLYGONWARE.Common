@@ -11,7 +11,7 @@ namespace POLYGONWARE.Common
 
         public static PlayerController Local;
 
-        private PlayerControls _playerInput;
+        //private PlayerControls _playerInput;
         private IInputHandler _inputHandler;
         
         protected override void Awake()
@@ -23,8 +23,8 @@ namespace POLYGONWARE.Common
                 Destroy(gameObject);
                 return;
             }
-
-            _playerInput = new PlayerControls();
+            
+            //_playerInput = new PlayerControls();
             base.Awake();
             Local = this;
         }
@@ -34,7 +34,7 @@ namespace POLYGONWARE.Common
             controllable.TakeControl(this);
             Debug.Log("type " + controllable.InputHandlerType);
             _inputHandler?.Dispose();
-            _inputHandler = (IInputHandler)Activator.CreateInstance(controllable.InputHandlerType, _playerInput, controllable);
+            _inputHandler = (IInputHandler)Activator.CreateInstance(controllable.InputHandlerType, _inputAsset, controllable);
             
             if(_playerCamera)
                 _playerCamera.SetTarget(controllable.Transform);
