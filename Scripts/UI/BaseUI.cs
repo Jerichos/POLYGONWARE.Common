@@ -12,6 +12,13 @@ namespace POLYGONWARE.Common.UI
         
         protected virtual void Awake()
         {
+            if (!_panel)
+            {
+                _panel = transform.Find("panel");
+                if(!_panel)
+                    gameObject.LogError("could not find child transform of name 'panel' of this UI");
+            }
+            
             if (enabled)
             {
                 Invoke(nameof(EnableDelayed), 0.01f);
