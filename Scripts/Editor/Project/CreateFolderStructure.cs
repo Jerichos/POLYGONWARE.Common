@@ -29,12 +29,12 @@ public class CreateFolderStructure : EditorWindow
         string[] subfolders = {
             "Animations",
             "Audio",
-            "Materials",
+            "Graphics/Materials",
+            "Graphics/Textures",
             "Models",
             "Prefabs",
             "Scripts",
             "Shaders",
-            "Textures",
             "UI",
             "Scenes",
             "StreamingAssets"
@@ -42,19 +42,30 @@ public class CreateFolderStructure : EditorWindow
 
         if (!AssetDatabase.IsValidFolder(rootPath))
         {
-            Directory.CreateDirectory(rootPath);
+            AssetDatabase.CreateFolder("Assets", subfolderName);
         }
 
-        foreach (var folder in subfolders)
+        foreach (var subfolder in subfolders)
         {
-            string folderPath = Path.Combine(rootPath, folder);
-            
-            if (!AssetDatabase.IsValidFolder(folderPath))
+            string[] nestedFolders = subfolder.Split('/');
+            string currentFolderPath = rootPath;
+
+            foreach (var nestedFolder in nestedFolders)
             {
-                AssetDatabase.CreateFolder(rootPath, folder);
+                currentFolderPath = Path.Combine(currentFolderPath, nestedFolder);
+
+                if (!AssetDatabase.IsValidFolder(currentFolderPath))
+                {
+                    string parentDirectory = Path.GetDirectoryName(currentFolderPath); 
+                    string newFolderName = Path.GetFileName(currentFolderPath);
+
+                    // Use Unity's method to create the folder to ensure meta file creation and asset database updating
+                    AssetDatabase.CreateFolder(parentDirectory.Replace("\\", "/"), newFolderName);
+                }
             }
         }
 
         AssetDatabase.Refresh();
     }
+
 }
