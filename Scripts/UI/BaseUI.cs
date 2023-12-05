@@ -1,11 +1,13 @@
 ﻿using System;
 using POLYGONWARE.Common.Util;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace POLYGONWARE.Common.UI
 {
     public abstract class BaseUI : MonoBehaviour, IUI
     {
+        [SerializeField] private bool _showOnAwake;
         [SerializeField] protected Transform _panel;
 
         public bool IsOpen => _panel.gameObject.activeSelf;
@@ -19,17 +21,22 @@ namespace POLYGONWARE.Common.UI
                     gameObject.LogError("could not find child transform of name 'panel' of this UI");
             }
             
-            if (enabled)
-            {
-                Invoke(nameof(EnableDelayed), 0.01f);
-                enabled = false;
-            }
+            // if (enabled)
+            // {
+            //     Invoke(nameof(EnableDelayed), 0.01f);
+            //     enabled = false;
+            // }
+            
+            if (_showOnAwake)
+                Open();
+            else
+                Close();
         }
 
-        private void EnableDelayed()
-        {
-            enabled = true;
-        }
+        // private void EnableDelayed()
+        // {
+        //     enabled = true;
+        // }
 
         public virtual IUI Open()
         {
@@ -57,7 +64,7 @@ namespace POLYGONWARE.Common.UI
 
         public virtual IUI Toggle()
         {
-            // gameObject.Log("toggle");
+            //gameObject.Log("toggle");
             var open = !_panel.gameObject.activeInHierarchy;
 
             return open ? Open() : Close();
