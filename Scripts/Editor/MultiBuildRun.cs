@@ -58,13 +58,53 @@ public class MultiBuildRun : EditorWindow
         
         GUILayout.Space(10);
 
+        for (int i = 0; i < _runningProcesses.Count; i++)
+        {
+            if(_runningProcesses[i] == null || _runningProcesses[i].HasExited)
+                _runningProcesses.RemoveAt(i);
+        }
+        
         if (_runningProcesses.Count == 0 && GUILayout.Button("Build and Run"))
             BuildAndRun();
         
         if(_runningProcesses.Count > 0 && GUILayout.Button("Stop Running Instances"))
             StopRunningInstances();
     }
+
+    private void LoadPrefs()
+    {
+        _numberOfInstances = EditorPrefs.GetInt("MultiBuildRun.NumberOfInstances", _numberOfInstances);
+        _playInEditor = EditorPrefs.GetBool("MultiBuildRun.PlayInEditor", _playInEditor);
+        _windowed = EditorPrefs.GetBool("MultiBuildRun.Windowed", _windowed);
+        _alwaysOnTop = EditorPrefs.GetBool("MultiBuildRun.AlwaysOnTop", _alwaysOnTop);
+        _cleanBuild = EditorPrefs.GetBool("MultiBuildRun.CleanBuild", _cleanBuild);
+        _buildPath = EditorPrefs.GetString("MultiBuildRun.BuildPath", _buildPath);
+        _buildTarget = (BuildTarget)EditorPrefs.GetInt("MultiBuildRun.BuildTarget", (int)_buildTarget);
+        _buildOptions = (BuildOptions)EditorPrefs.GetInt("MultiBuildRun.BuildOptions", (int)_buildOptions);
+    }
+
+    private void SavePrefs()
+    {
+        EditorPrefs.SetInt("MultiBuildRun.NumberOfInstances", _numberOfInstances);
+        EditorPrefs.SetBool("MultiBuildRun.PlayInEditor", _playInEditor);
+        EditorPrefs.SetBool("MultiBuildRun.Windowed", _windowed);
+        EditorPrefs.SetBool("MultiBuildRun.AlwaysOnTop", _alwaysOnTop);
+        EditorPrefs.SetBool("MultiBuildRun.CleanBuild", _cleanBuild);
+        EditorPrefs.SetString("MultiBuildRun.BuildPath", _buildPath);
+        EditorPrefs.SetInt("MultiBuildRun.BuildTarget", (int)_buildTarget);
+        EditorPrefs.SetInt("MultiBuildRun.BuildOptions", (int)_buildOptions);
+    }
+
+    private void OnEnable()
+    {
+        LoadPrefs();
+    }
     
+    private void OnDisable()
+    {
+        SavePrefs();
+    }
+
     private void BuildAndRun()
     {
         // get project folder path
