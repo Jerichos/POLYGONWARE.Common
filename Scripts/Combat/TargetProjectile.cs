@@ -36,10 +36,10 @@ public class TargetProjectile : PooledObject
     private void OnProjectileHit()
     {
         Debug.Log("1 deactivate me");
-        if (_targetTransform && _damageData.Target is IHittable hittable)
-        {
-            hittable.Hit(_damageData);
-        }
+        // if (_targetTransform && _damageData.Target is IHittable hittable)
+        // {
+        //     hittable.Hit(_damageData);
+        // }
         
         if(_model)
             _model.SetActive(false);
@@ -62,13 +62,13 @@ public class TargetProjectile : PooledObject
 
     public void Fire(DamageData damageData)
     {
-        if (!damageData.Target)
-        {
-            DeactivateMe();
-            return;
-        }
-        
-        _targetTransform = damageData.Target.transform;
+        // if (!damageData.Target)
+        // {
+        //     DeactivateMe();
+        //     return;
+        // }
+        //
+        // _targetTransform = damageData.Target.transform;
         _damageData = damageData;
         enabled = true;
     }

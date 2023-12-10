@@ -30,7 +30,7 @@ namespace POLYGONWARE.Common
             _cooldown = cooldown;
         }
 
-        public bool TimePassed => Time.time - _lastTime > _cooldown;
+        public bool IsReady => Time.time - _lastTime > _cooldown;
 
         public void Restart()
         {
