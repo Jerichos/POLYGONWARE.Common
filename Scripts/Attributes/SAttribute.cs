@@ -21,7 +21,7 @@ namespace POLYGONWARE.Common
 
         public event GenericDelegate<T> EChanged;
 
-        public void SetValue(T value)
+        public void Set(T value)
         {
             Value = value;
         }

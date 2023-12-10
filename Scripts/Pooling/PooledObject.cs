@@ -10,5 +10,11 @@ namespace POLYGONWARE.Common.Pooling
         {
             gameObject.SetActive(value);
         }
+        
+        public void DeactivateAndReturnToPool()
+        {
+            gameObject.SetActive(false);
+            PoolSystem.ReturnInstance(this);
+        }
     }
 }
