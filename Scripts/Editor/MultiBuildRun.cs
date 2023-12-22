@@ -115,6 +115,9 @@ public class MultiBuildRun : EditorWindow
 
     private void BuildAndRun()
     {
+        // save scene
+        EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+        
         // get project folder path
         string exePath = Application.dataPath.Replace("/Assets", "");
         string exeName = "Tanks.exe";

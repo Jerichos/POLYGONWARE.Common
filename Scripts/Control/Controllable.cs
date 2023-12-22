@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using POLYGONWARE.Common.Util;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,6 +20,8 @@ namespace POLYGONWARE.Common
             Debug.Log(name + " TakeControl ");
             Controller = owner;
         }
+
+        public event VoidDelegate Destroyed;
 
         public abstract Type InputHandlerType { get; }
         
