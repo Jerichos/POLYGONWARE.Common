@@ -66,9 +66,17 @@ public class MultiBuildRun : EditorWindow
         
         if (_runningProcesses.Count == 0 && GUILayout.Button("Build and Run"))
             BuildAndRun();
-        
-        if(_runningProcesses.Count > 0 && GUILayout.Button("Stop Running Instances"))
+
+        if (_runningProcesses.Count > 0 && GUILayout.Button("Stop Running Instances"))
+        {
             StopRunningInstances();
+            
+            // if editor is running stop it as well
+            if (EditorApplication.isPlaying)
+            {
+                EditorApplication.isPlaying = false;
+            }
+        }
     }
 
     private void LoadPrefs()
@@ -122,6 +130,9 @@ public class MultiBuildRun : EditorWindow
             if(Directory.Exists(buildPath))
                 Directory.Delete(buildPath, true);
         }
+        
+        if (!Directory.Exists(buildPath))
+            Directory.CreateDirectory(buildPath);
         
         // Build settings
         BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions

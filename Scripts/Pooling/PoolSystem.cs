@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace POLYGONWARE.Common.Pooling
 {
-    [DefaultExecutionOrder(-50)]
+    [DefaultExecutionOrder(-100)]
     public class PoolSystem : Singleton<PoolSystem>
     {
         [SerializeField] PooledObjectsSO _pooledObjectsSO;
@@ -15,6 +15,9 @@ namespace POLYGONWARE.Common.Pooling
         protected override void Awake()
         {
             base.Awake();
+            
+            // clear pool
+            PooledInstances.Clear();
 
             foreach (PoolData poolData in PooledPrefabs)
             {

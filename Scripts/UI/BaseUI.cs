@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 
 namespace POLYGONWARE.Common.UI
 {
-    public abstract class BaseUI : MonoBehaviour, IUI
+    public abstract class BaseUI : MonoBehaviour
     {
         [SerializeField] private bool _showOnAwake;
         [SerializeField] protected Transform _panel;
@@ -37,37 +37,36 @@ namespace POLYGONWARE.Common.UI
         // {
         //     enabled = true;
         // }
-
-        public virtual IUI Open()
+        public virtual void Open()
         {
             // gameObject.Log("Open");
             _panel.gameObject.SetActive(true);
             OnOpen();
-            return this;
         }
 
-        public virtual IUI Open<T>(T arg)
+        public virtual void Open<T>(T arg)
         {
             // gameObject.Log("Open T");
             _panel.gameObject.SetActive(true);
             OnOpen();
-            return this;
         }
 
-        public virtual IUI Close()
+        public virtual void Close()
         {
             // gameObject.Log("Close");
             _panel.gameObject.SetActive(false);
             OnClose();
-            return this;
         }
 
-        public virtual IUI Toggle()
+        public virtual void Toggle()
         {
             //gameObject.Log("toggle");
             var open = !_panel.gameObject.activeInHierarchy;
 
-            return open ? Open() : Close();
+            if(open)
+                Open();
+            else
+                Close();
         }
 
         protected virtual void OnOpen()

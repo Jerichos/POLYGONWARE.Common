@@ -3,13 +3,19 @@ using UnityEngine;
 
 namespace POLYGONWARE.Common.Combat
 {
+
+public delegate bool HitDelegate(DamageData damageData);
+
 public class HitProxy : MonoBehaviour, IHittable
 {
-    public GenericDelegate<DamageData> OnHit;
+    public HitDelegate OnHit;
     
-    public void Hit(DamageData damageData)
+    public bool Hit(DamageData damageData)
     {
-        OnHit?.Invoke(damageData);
+        if(OnHit == null) 
+            return false;
+        
+        return OnHit.Invoke(damageData);
     }
 }
 }

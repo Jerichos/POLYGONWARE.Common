@@ -7,6 +7,6 @@ namespace POLYGONWARE.Common.Combat
     public struct DamageData
     {
         public int Damage;
-        public GameObject Source;
+        public IControllable Source;
     }
 }

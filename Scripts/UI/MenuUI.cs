@@ -7,15 +7,15 @@ namespace POLYGONWARE.Common.UI
     {
         [SerializeField] private BaseUI _defaultUI;
 
-        private IUI _currentUI;
-        private IUI _previousUI;
+        private BaseUI _currentUI;
+        private BaseUI _previousUI;
         
         private void Start()
         {
             SwitchUI(_defaultUI);
         }
 
-        public void SwitchUI(IUI ui)
+        public void SwitchUI(BaseUI ui)
         {
             _previousUI = _currentUI;
             _previousUI?.Close();

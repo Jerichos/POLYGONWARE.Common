@@ -50,7 +50,7 @@ public class InstancedPool
         
     public PooledObject GetInstance()
     {
-        Debug.Log("get instance, available instances: " + Instances.Count);
+        //Debug.Log("get instance, available instances: " + Instances.Count);
         if (Instances.Count == 0)
         {
             if (Count >= MaxCount)

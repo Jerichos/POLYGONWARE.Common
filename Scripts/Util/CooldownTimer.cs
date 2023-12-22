@@ -1,8 +1,10 @@
-﻿using POLYGONWARE.Common.Util;
+﻿using System;
+using POLYGONWARE.Common.Util;
 using UnityEngine;
 
 namespace POLYGONWARE.Common
 {
+    [Serializable]
     public struct CooldownTimer
     {
         private readonly float _cooldown;
@@ -31,6 +33,7 @@ namespace POLYGONWARE.Common
         }
 
         public bool IsReady => Time.time - _lastTime > _cooldown;
+        public float TimeLeft => _cooldown - (Time.time - _lastTime);
 
         public void Restart()
         {

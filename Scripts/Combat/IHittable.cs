@@ -2,6 +2,6 @@
 {
     public interface IHittable
     {
-        void Hit(DamageData damageData);
+        bool Hit(DamageData damageData);
     }
 }
