@@ -7,7 +7,7 @@ namespace POLYGONWARE.Common
     [Serializable]
     public struct CooldownTimer
     {
-        private readonly float _cooldown;
+        public readonly float Cooldown;
         private float _lastTime;
 
         public CooldownTimer(float cooldown)
@@ -15,7 +15,7 @@ namespace POLYGONWARE.Common
             if (cooldown <= 0)
                 cooldown = 0.01f;
             
-            _cooldown = cooldown;
+            Cooldown = cooldown;
             _lastTime = -cooldown;
         }
         
@@ -29,20 +29,25 @@ namespace POLYGONWARE.Common
             if (_lastTime == 0)
                 _lastTime = -cooldown;
             
-            _cooldown = cooldown;
+            Cooldown = cooldown;
         }
 
-        public bool IsReady => Time.time - _lastTime > _cooldown;
-        public float TimeLeft => _cooldown - (Time.time - _lastTime);
+        public bool IsReady => Time.time - _lastTime > Cooldown;
+        public float TimeLeft => Cooldown - (Time.time - _lastTime);
 
         public void Restart()
         {
             _lastTime = Time.time;
         }
 
+        public void Restart(float time)
+        {
+            _lastTime = time;
+        }
+
         public void Refresh()
         {
-            _lastTime = -_cooldown;
+            _lastTime = -Cooldown;
         }
     }
 }

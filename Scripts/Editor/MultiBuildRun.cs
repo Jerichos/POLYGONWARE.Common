@@ -18,8 +18,10 @@ public class MultiBuildRun : EditorWindow
     
     private bool _playInEditor = false;
     private bool _cleanBuild = false;
-    private bool _windowed = true;
     private bool _alwaysOnTop = true;
+    
+    private int _width = 800;
+    private int _height = 600;
     
     private BuildTarget _buildTarget = BuildTarget.StandaloneWindows64;
     private BuildOptions _buildOptions = BuildOptions.Development;
@@ -49,12 +51,16 @@ public class MultiBuildRun : EditorWindow
 
         _numberOfInstances = EditorGUILayout.IntField("Number of Instances", _numberOfInstances);
         _playInEditor = EditorGUILayout.Toggle("Play in Editor", _playInEditor);
-        _windowed = EditorGUILayout.Toggle("Windowed", _windowed);
-        _alwaysOnTop = EditorGUILayout.Toggle("Always On Top", _alwaysOnTop);
         _cleanBuild = EditorGUILayout.Toggle("Clean Build", _cleanBuild);
         _buildPath = EditorGUILayout.TextField("Build folder", _buildPath);
         _buildTarget = (BuildTarget)EditorGUILayout.EnumPopup("Build Target", _buildTarget);
         _buildOptions = (BuildOptions)EditorGUILayout.EnumFlagsField("Build Options", _buildOptions);
+        
+        GUILayout.Space(10);
+        GUILayout.Label("Window Options", EditorStyles.boldLabel);
+        _alwaysOnTop = EditorGUILayout.Toggle("Always On Top", _alwaysOnTop);
+        _width = EditorGUILayout.IntField("Width", _width);
+        _height = EditorGUILayout.IntField("Height", _height);
         
         GUILayout.Space(10);
 
@@ -83,24 +89,26 @@ public class MultiBuildRun : EditorWindow
     {
         _numberOfInstances = EditorPrefs.GetInt("MultiBuildRun.NumberOfInstances", _numberOfInstances);
         _playInEditor = EditorPrefs.GetBool("MultiBuildRun.PlayInEditor", _playInEditor);
-        _windowed = EditorPrefs.GetBool("MultiBuildRun.Windowed", _windowed);
         _alwaysOnTop = EditorPrefs.GetBool("MultiBuildRun.AlwaysOnTop", _alwaysOnTop);
         _cleanBuild = EditorPrefs.GetBool("MultiBuildRun.CleanBuild", _cleanBuild);
         _buildPath = EditorPrefs.GetString("MultiBuildRun.BuildPath", _buildPath);
         _buildTarget = (BuildTarget)EditorPrefs.GetInt("MultiBuildRun.BuildTarget", (int)_buildTarget);
         _buildOptions = (BuildOptions)EditorPrefs.GetInt("MultiBuildRun.BuildOptions", (int)_buildOptions);
+        _width = EditorPrefs.GetInt("MultiBuildRun.Width", _width);
+        _height = EditorPrefs.GetInt("MultiBuildRun.Height", _height);
     }
 
     private void SavePrefs()
     {
         EditorPrefs.SetInt("MultiBuildRun.NumberOfInstances", _numberOfInstances);
         EditorPrefs.SetBool("MultiBuildRun.PlayInEditor", _playInEditor);
-        EditorPrefs.SetBool("MultiBuildRun.Windowed", _windowed);
         EditorPrefs.SetBool("MultiBuildRun.AlwaysOnTop", _alwaysOnTop);
         EditorPrefs.SetBool("MultiBuildRun.CleanBuild", _cleanBuild);
         EditorPrefs.SetString("MultiBuildRun.BuildPath", _buildPath);
         EditorPrefs.SetInt("MultiBuildRun.BuildTarget", (int)_buildTarget);
         EditorPrefs.SetInt("MultiBuildRun.BuildOptions", (int)_buildOptions);
+        EditorPrefs.SetInt("MultiBuildRun.Width", _width);
+        EditorPrefs.SetInt("MultiBuildRun.Height", _height);
     }
 
     private void OnEnable()
@@ -145,11 +153,6 @@ public class MultiBuildRun : EditorWindow
             target = _buildTarget,
             options = _buildOptions
         };
-        
-        if (_windowed)
-        {
-            buildPlayerOptions.options |= BuildOptions.ShowBuiltPlayer;
-        }
         
         // Build the game
         Debug.Log("Building... " + exePath);
@@ -213,19 +216,16 @@ public class MultiBuildRun : EditorWindow
         {
             process.Refresh(); // Refresh to get updated process info
             
-            int width = 800;  // Set to your desired width
-            int height = 600; // Set to your desired height
-            
             IntPtr hWnd = process.MainWindowHandle;
             if (hWnd != IntPtr.Zero)
             {
-                int x = instanceIndex * width;
+                int x = instanceIndex * _width;
                 int y = 0;
                 
                 if(!_alwaysOnTop)
-                    SetWindowPos(hWnd, IntPtr.Zero, x, y, width, height, SWP_NOZORDER | SWP_NOSIZE);
+                    SetWindowPos(hWnd, IntPtr.Zero, x, y, _width, _height, SWP_NOZORDER | SWP_NOSIZE);
                 else
-                    SetWindowPos(hWnd, HWND_TOPMOST, x, y, width, height, SWP_SHOWWINDOW);
+                    SetWindowPos(hWnd, HWND_TOPMOST, x, y, _width, _height, SWP_SHOWWINDOW);
             }
         }
     }
