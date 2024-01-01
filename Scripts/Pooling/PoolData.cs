@@ -45,7 +45,7 @@ public class InstancedPool
         instance.gameObject.SetActive(false);
         Instances.Enqueue(instance);
         Count++;
-        Debug.Log("enqueued new instance, available instances: " + Instances.Count + " count: " + Count + " max count: " + MaxCount + " min count: " + MinCount + " prefab: " + Prefab.name + " parent: " + _parent.name);
+        //Debug.Log("enqueued new instance, available instances: " + Instances.Count + " count: " + Count + " max count: " + MaxCount + " min count: " + MinCount + " prefab: " + Prefab.name + " parent: " + _parent.name);
     }
         
     public PooledObject GetInstance()

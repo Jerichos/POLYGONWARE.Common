@@ -17,5 +17,15 @@ namespace POLYGONWARE.Common.Pooling
             gameObject.SetActive(false);
             PoolSystem.ReturnInstance(this);
         }
+        
+        protected virtual void OnReset()
+        {
+            
+        }
+
+        private void OnEnable()
+        {
+            OnReset();
+        }
     }
 }
