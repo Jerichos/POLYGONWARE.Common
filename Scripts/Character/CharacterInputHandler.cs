@@ -62,5 +62,10 @@ namespace POLYGONWARE.Common
             _characterActions.Movement.started -= OnMovementStarted;
             _characterActions.Movement.canceled -= OnMovementCanceled;
         }
+
+        public void Enable()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

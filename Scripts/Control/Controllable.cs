@@ -22,6 +22,10 @@ namespace POLYGONWARE.Common
         }
 
         public event VoidDelegate Destroyed;
+        public IInputHandler GetInputHandler(IInputActionCollection2 inputActions)
+        {
+            throw new NotImplementedException();
+        }
 
         public abstract Type InputHandlerType { get; }
         

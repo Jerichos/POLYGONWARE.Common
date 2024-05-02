@@ -5,5 +5,6 @@ namespace POLYGONWARE.Common
 {
     public interface IInputHandler : IDisposable
     {
+        void Enable();
     }
 }

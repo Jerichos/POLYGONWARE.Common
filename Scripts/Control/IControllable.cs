@@ -1,6 +1,7 @@
 ﻿using System;
 using POLYGONWARE.Common.Util;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace POLYGONWARE.Common
 {
@@ -11,5 +12,7 @@ namespace POLYGONWARE.Common
         public IController Controller { get; }
         void TakeControl(IController owner);
         event VoidDelegate Destroyed;
+
+        IInputHandler GetInputHandler(IInputActionCollection2 inputActions);
     }
 }
